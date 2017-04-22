@@ -1,0 +1,5 @@
+{
+    "require-dev": {
+        "ignasbernotas/laravel-model-generator": "^1.2"
+    }
+}
