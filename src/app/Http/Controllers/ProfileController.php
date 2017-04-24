@@ -44,7 +44,7 @@ class ProfileController extends Controller
         if (!empty($perfil))
             return redirect()->route('profile.edit');
 
-        return view('perfil.create')->with('sexos', Sexo::all());
+        return view('perfil.create')->with('sexos', Sexo::all())->with('provincias', Provincia::all());
 
     }
 
