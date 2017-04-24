@@ -13,6 +13,8 @@ class Perfil extends Model
 
     public $timestamps = false;
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'apellido',
         'nombre',
@@ -26,11 +28,11 @@ class Perfil extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User','user_id');
     }
 
-    public function imagenes(){
-        return $this->hasMany('App\Models\Imagen');
-    }
+//    public function imagenes(){
+//        return $this->hasMany('App\Models\Imagen');
+//    }
         
 }

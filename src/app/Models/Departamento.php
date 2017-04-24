@@ -20,5 +20,12 @@ class Departamento extends Model
 
     protected $guarded = [];
 
+    public function provincia(){
+        return $this->belongsTo('App\Models\Provincia','provincia_id');
+    }
+
+    public function localidad(){
+        return $this->hasMany('App\Models\Localidad');
+    }
         
 }

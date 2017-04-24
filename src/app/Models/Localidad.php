@@ -20,5 +20,7 @@ class Localidad extends Model
 
     protected $guarded = [];
 
-        
+    public function departamento(){
+        return $this->belongsTo('App\Models\Departamento','departamento_id');
+    }
 }

@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\{
+    Perfil
+};
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +21,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
+/*Parametricos*/
+Route::get('sexo/all','SexoController@all')->name('sexo.all');
+Route::get('departamento/{provincia_id}/provincia','DepartamentoController@byProvincia')->name('departamento.byProvincia');
+Route::get('localidad/{departamento_id}/departamento','LocalidadController@byDepartamento')->name('departamento.byDepartamento');
 
-Route::get('/profile', 'ProfileController@index');
-Route::post('profile/create','ProfileController@create');
+/*Profile*/
+Route::get('profile', 'ProfileController@index')->name('profile');
+Route::get('profile/create','ProfileController@create')->name('profile.create');
+Route::post('profile/store','ProfileController@store')->name('profile.store');
+Route::get('profile/edit','ProfileController@edit')->name('profile.edit');
+Route::patch('profile/{id}','ProfileController@update')->name('profile.update');

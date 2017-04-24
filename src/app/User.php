@@ -14,6 +14,8 @@ class User extends Authenticatable
 
     public $timestamps = false;
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'email',
         'password',
@@ -28,7 +30,7 @@ class User extends Authenticatable
 
     public function perfil()
     {
-        return $this->hasOne('App\Models\Perfil');
+        return $this->hasOne('App\Models\Perfil','user_id');
     }
 
     protected $guarded = [];

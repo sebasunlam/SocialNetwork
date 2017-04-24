@@ -13,6 +13,19 @@
             background-size: cover;
         }
 
+        .has-error .control-label,
+        .has-error .help-block,
+        .has-error .form-control-feedback {
+            color: #e53d3d;
+        }
+
+        /* Color of valid field */
+        .has-success .control-label,
+        .has-success .help-block,
+        .has-success .form-control-feedback {
+            color: #e53d3d;
+        }
+
         .navbar {
             margin-bottom: 0px;
         }

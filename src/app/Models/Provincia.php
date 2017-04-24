@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Provincium
  */
-class Provincium extends Model
+class Provincia extends Model
 {
     protected $table = 'provincia';
 
@@ -18,6 +18,11 @@ class Provincium extends Model
     ];
 
     protected $guarded = [];
+
+    public function departamento(){
+        return $this->hasMany('App\Models\Departamento');
+
+    }
 
         
 }
