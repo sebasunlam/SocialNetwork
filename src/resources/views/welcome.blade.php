@@ -35,7 +35,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">Bienvenido a {{ config('app.name', 'Laravel') }} <small> registrate para continuar</small></div>
                         <div class="panel-body">
-                            @include('auth/registerpartial')
+                            @include('auth.registerpartial')
                         </div>
                     </div>
 

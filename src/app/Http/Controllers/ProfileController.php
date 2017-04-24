@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,11 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $id = Auth::user()->id;
+        $id = \Auth::user()->id;
         $currentuser = User::find($id);
 
         if($currentuser->perfil == null)
-            return view('perfil/create');
+            return view('perfil.create');
 
         return view('home');
     }

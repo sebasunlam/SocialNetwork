@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Registrarse</div>
                 <div class="panel-body">
-                    @include('auth/registerpartial')
+                    @include('auth.registerpartial')
                 </div>
             </div>
         </div>

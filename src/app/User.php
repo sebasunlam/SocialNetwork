@@ -26,6 +26,11 @@ class User extends Authenticatable
         'googleRefreshToken'
     ];
 
+    public function perfil()
+    {
+        return $this->hasOne('App\Models\Perfil');
+    }
+
     protected $guarded = [];
 
     /**
