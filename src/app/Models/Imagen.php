@@ -17,6 +17,11 @@ class Imagen extends Model
         'url'
     ];
 
+
+    public function perfil(){
+        return $this->hasMany('App\Models\Perfil');
+    }
+
     protected $guarded = [];
 
         

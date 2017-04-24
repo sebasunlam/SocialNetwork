@@ -28,5 +28,9 @@ class Perfil extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function imagenes(){
+        return $this->hasMany('App\Models\Imagen');
+    }
         
 }

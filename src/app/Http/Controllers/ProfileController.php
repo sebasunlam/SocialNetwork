@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Perfil;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,10 @@ class ProfileController extends Controller
             return view('perfil.create');
 
         return view('home');
+    }
+
+    public function create(){
+//        Perfil::a
     }
 
 
