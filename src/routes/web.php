@@ -31,4 +31,4 @@ Route::get('profile', 'ProfileController@index')->name('profile');
 Route::get('profile/create','ProfileController@create')->name('profile.create');
 Route::post('profile/store','ProfileController@store')->name('profile.store');
 Route::get('profile/edit','ProfileController@edit')->name('profile.edit');
-Route::patch('profile/{id}','ProfileController@update')->name('profile.update');
+Route::patch('profile/update','ProfileController@update')->name('profile.update');

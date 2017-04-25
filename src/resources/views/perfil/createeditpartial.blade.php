@@ -202,9 +202,9 @@
                 </span>
                     @endif
                 </div>
-                <label for="numero" class="col-sm-2 col-md-2 control-label">Nro</label>
+                <label for="nro" class="col-sm-2 col-md-2 control-label">Nro</label>
                 <div class="col-sm-9 col-md-2">
-                    <input type="text" id="numero" name="numero" class="form-control"
+                    <input type="text" id="nro" name="nro" class="form-control"
                            value="{{!empty($perfil) ? $perfil->numero :'' }}">
                     @if ($errors->has('numero'))
                         <span class="help-block"><strong>{{ $errors->first('numero') }}</strong></span>

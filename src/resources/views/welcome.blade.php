@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Bienvenido a {{ config('app.name', 'Laravel') }} <small> registrate para continuar</small></div>
+                        <div class="panel-heading">Bienvenido a <strong>{{ config('app.name', 'Laravel') }}</strong> <small> registrate para continuar</small></div>
                         <div class="panel-body">
                             @include('auth.registerpartial')
                         </div>

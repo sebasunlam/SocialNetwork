@@ -22,6 +22,8 @@ class Domicilio extends Model
     ];
 
     protected $guarded = [];
-
+    public function perfil (){
+        return $this->belongsToMany('App\Models\Perfil','perfil_domicilio');
+    }
         
 }

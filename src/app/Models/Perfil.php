@@ -31,6 +31,10 @@ class Perfil extends Model
         return $this->belongsTo('App\User','user_id');
     }
 
+    public function domicilio (){
+        return $this->belongsToMany('App\Models\Domicilio','perfil_domicilio');
+    }
+
 //    public function imagenes(){
 //        return $this->hasMany('App\Models\Imagen');
 //    }
