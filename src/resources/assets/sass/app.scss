@@ -7,3 +7,20 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "node_modules/font-awesome/scss/font-awesome";
+
+.profile{
+  min-width: 300px;
+  min-height: 300px;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.profile-min{
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 200px;
+  max-height: 200px;
+}
+
+

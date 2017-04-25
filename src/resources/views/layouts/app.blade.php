@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="/css/bootstrap-datepicker3.css" rel="stylesheet">
 
 @yield('styles')
 <!-- Scripts -->
@@ -85,8 +86,47 @@
     @yield('content')
 </div>
 
+<div class="modal fade" id="alertModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="alertModalHeader"></h4>
+            </div>
+            <div class="modal-body" id="alertModalContent">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" id="btnAertModal"></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="alertModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="alertModalHeader"></h4>
+            </div>
+            <div class="modal-body" id="alertModalContent">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" id="btnAertModal"></button>
+            </div>
+        </div>
+
+    </div>
+</div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="/js/common.js"></script>
 @yield('scripts')
+
 </body>
 </html>

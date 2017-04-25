@@ -23,7 +23,11 @@ class Domicilio extends Model
 
     protected $guarded = [];
     public function perfil (){
-        return $this->belongsToMany('App\Models\Perfil','perfil_domicilio');
+        return $this->belongsToMany('App\Models\Perfil','perfil_domicilio')->withPivot('timestamp');
+    }
+
+    public function localidad(){
+        return $this->belongsTo('App\Models\Localidad','localidad_id');
     }
         
 }

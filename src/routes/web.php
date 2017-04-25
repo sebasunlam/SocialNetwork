@@ -26,6 +26,7 @@ Route::get('sexo/all','SexoController@all')->name('sexo.all');
 Route::get('departamento/{provincia_id}/provincia','DepartamentoController@byProvincia')->name('departamento.byProvincia');
 Route::get('localidad/{departamento_id}/departamento','LocalidadController@byDepartamento')->name('departamento.byDepartamento');
 
+
 /*Profile*/
 Route::get('profile', 'ProfileController@index')->name('profile');
 Route::get('profile/create','ProfileController@create')->name('profile.create');

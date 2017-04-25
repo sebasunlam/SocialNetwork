@@ -25,7 +25,7 @@ class Departamento extends Model
     }
 
     public function localidad(){
-        return $this->hasMany('App\Models\Localidad');
+        return $this->hasMany('App\Models\Localidad','departamento_id');
     }
         
 }

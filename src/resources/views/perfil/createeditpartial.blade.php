@@ -1,25 +1,69 @@
+@section('styles')
+    <style type="text/css">
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>
+@endsection
 @section('scripts')
     <script>
 
-        $(document).ready(function () {
-            var   map = new google.maps.Map(document.getElementById('map'), {
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: -34.397, lng: 150.644},
                 zoom: 8,
                 disableDefaultUI: true,
                 draggable: false
             });
+        }
+        $(document).ready(function () {
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
+            $('.input-group.date').datepicker({
+                format: "yyyy-mm-dd",
+                language: "es"
+            });
 
-
-                    map.setCenter(pos);
+            function getLocalidades(departamentoId) {
+                return $.get("/localidad/" + departamentoId + "/departamento").done(function (data) {
+                    var localidades = '<option>Seleccione una localidad...</option>';
+                    for (i = 0; i < data.length; i++) {
+                        localidades = localidades + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
+                    }
+                    $("#localidad_id").html(localidades);
                 });
             }
+
+
+            function getDepartamentos(provinciaId) {
+
+                return $.get("/departamento/" + provinciaId + "/provincia").done(function (data) {
+                    var deptos = '<option>Seleccione un departamento...</option>';
+                    ;
+                    for (i = 0; i < data.length; i++) {
+                        deptos = deptos + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
+                    }
+                    $("#departamentoId").html(deptos);
+                });
+            }
+
 
             function toggleBounce() {
                 if (marker.getAnimation() !== null) {
@@ -30,56 +74,112 @@
             };
 
 
-            $("#provinciaId").change(function () {
-                $.get("/departamento/" + $("#provinciaId").val() + "/provincia", function (data) {
-                    var deptos = '<option>Seleccione un departamento...</option>';
-                    ;
-                    for (i = 0; i < data.length; i++) {
-                        deptos = deptos + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
+            function setMarker() {
+                var address = $("#provinciaId option:selected").text() + ',' +
+                    $("#departamentoId option:selected").text() + ',' +
+                    $("#localidad_id option:selected").text() + ',' + $("#calle").val() + ' ' + $("#nro").val();
+                var latLng;
+                return $.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                    address: address,
+                    key: "AIzaSyDzfaxwXl0xql_XMHVs7e2m62Evn8avK3U"
+                }).done(function (data) {
+                    if (data.status == 'OK') {
+                        latLng = new google.maps.LatLng(data.results[0].geometry.location.lat, data.results[0].geometry.location.lng);
+
+                        var marker = new google.maps.Marker({
+                            position: latLng,
+                            map: map,
+                            title: address,
+                            animation: google.maps.Animation.DROP
+                        });
+
+                        marker.addListener('click', toggleBounce);
+
+                        map.setZoom(13);
+                        map.setCenter(latLng);
+                        marker.setMap(map);
+                        $("#lat").val(data.results[0].geometry.location.lat);
+                        $("#long").val(data.results[0].geometry.location.lng);
+                    } else {
+                        modal.hidePleaseWait();
+                        toogleWarinngModal('<h3>Google no encontro su dirección</h3>', 'Opssss...', 'Aceptar');
+
                     }
-                    $("#departamentoId").html(deptos);
+
+
+                })
+            }
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#img').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#photo").change(function(){
+                readURL(this);
+            });
+
+
+            $("#provinciaId").change(function () {
+                modal.showPleaseWait();
+                $.when(getDepartamentos($("#provinciaId").val())).always(function () {
+                    modal.hidePleaseWait();
                 });
             });
 
             $("#departamentoId").change(function () {
-                $.get("/localidad/" + $("#departamentoId").val() + "/departamento", function (data) {
-                    var localidades = '<option>Seleccione una localidad...</option>';
-                    for (i = 0; i < data.length; i++) {
-                        localidades = localidades + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
-                    }
-                    $("#localidad_id").html(localidades);
-                });
+                modal.showPleaseWait();
+                $.when(getLocalidades($("#departamentoId").val())).always(function () {
+                    modal.hidePleaseWait();
+                })
             });
 
             $("#btnSetMarker").click(function (e) {
                 e.preventDefault();
-                var address = $("#provinciaId option:selected").text() + ',' +
-                    $("#departamentoId option:selected").text() + ',' +
-                    $("#localidad_id option:selected").text() + ',' + $("#calle").val() + ' ' + $("#numero").val();
-                var latLng;
-                $.get("https://maps.googleapis.com/maps/api/geocode/json", {
-                    address: address,
-                    key: "AIzaSyDzfaxwXl0xql_XMHVs7e2m62Evn8avK3U"
-                }, function (data) {
-                    latLng = new google.maps.LatLng(data.results[0].geometry.location.lat, data.results[0].geometry.location.lng);
-
-                    var marker = new google.maps.Marker({
-                        position: latLng,
-                        map: map,
-                        title: address,
-                        animation: google.maps.Animation.DROP
-                    });
-
-                    marker.addListener('click', toggleBounce);
-
-//                    var map = new google.maps.Map(document.getElementById('map'));
-                    map.setZoom(13);      // This will trigger a zoom_changed on the map
-                    map.setCenter(latLng);
-                    marker.setMap(map);
+                modal.showPleaseWait();
+                $.when(setMarker()).always(function () {
+                    modal.hidePleaseWait();
                 });
 
-
             });
+
+            @if(!empty($domicilio))
+            modal.showPleaseWait();
+            $.when(getDepartamentos({{$provincia_id}}), getLocalidades({{$departamento_id}})).done(function (deptos, localidades) {
+                $("#provinciaId").val({{$provincia_id}});
+                $("#localidad_id").val({{$domicilio->localidad_id}});
+                $("#departamentoId").val({{$departamento_id}});
+                $.when(setMarker()).always(function () {
+                    modal.hidePleaseWait();
+                });
+
+            }).always(function () {
+                modal.hidePleaseWait();
+            });
+
+            map.setCenter(new google.maps.LatLng({{$domicilio->long}},{{$domicilio->long}}));
+            @else
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+
+                    map.setCenter(pos);
+                });
+            }
+
+            @endif
         });
 
     </script>
@@ -89,10 +189,33 @@
 
 
 
-<hr>
-
-
 {{ csrf_field() }}
+<input type="hidden" id="lat" name="lat" value="{{!empty($domicilio) ? $domicilio->lat :'' }}">
+<input type="hidden" id="long" name="long" value="{{!empty($domicilio) ? $domicilio->long :'' }}">
+
+<div class="row">
+    <div class="col-sm-12" align="center">
+        <div>
+            @if(!empty($imagen))
+                <img id="img" src="$imagen->url" alt="" class="img-thumbnail profile">
+            @else
+                <img id="img" src="/img/no-avatar.png" alt="Suba una imagen" class="img-thumbnail profile">
+            @endif
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12" align="center">
+        <div>
+            <label class="btn btn-info btn-file">
+                Seleccionar... <input type="file" name="photo" id="photo" hidden> |
+                <i class="fa fa-file" aria-hidden="true"></i>
+            </label>
+        </div>
+    </div>
+
+</div>
+<hr>
 <div class="row">
     <div class="col-sm-12 col-md-5">
         <h3>Datos Personales</h3>
@@ -124,8 +247,13 @@
             <div class="form-group">
                 <label for="fechanacimiento" class="col-sm-2 col-md-3 control-label">Fecha de Nacimiento</label>
                 <div class="col-sm-10 col-md-9">
-                    <input type="text" id="fechanacimiento" name="fechanacimiento" class="form-control"
-                           value="{{!empty($perfil) ? $perfil->fechanacimiento :'' }}">
+                    <div class="input-group date">
+                        <input type="text" id="fechanacimiento" name="fechanacimiento" class="form-control"
+                               value="{{!empty($perfil) ? $perfil->fechanacimiento :'' }}">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
                     @if ($errors->has('fechanacimiento'))
                         <span class="help-block">
                     <strong>{{ $errors->first('fechanacimiento') }}</strong>
@@ -195,7 +323,7 @@
                 <label for="calle" class="col-sm-2 col-md-2 control-label">Calle</label>
                 <div class="col-sm-10 col-md-5">
                     <input type="text" id="calle" name="calle" class="form-control"
-                           value="{{!empty($perfil) ? $perfil->calle :'' }}">
+                           value="{{!empty($domicilio) ? $domicilio->calle :'' }}">
                     @if ($errors->has('calle'))
                         <span class="help-block">
                     <strong>{{ $errors->first('calle') }}</strong>
@@ -205,9 +333,9 @@
                 <label for="nro" class="col-sm-2 col-md-2 control-label">Nro</label>
                 <div class="col-sm-9 col-md-2">
                     <input type="text" id="nro" name="nro" class="form-control"
-                           value="{{!empty($perfil) ? $perfil->numero :'' }}">
-                    @if ($errors->has('numero'))
-                        <span class="help-block"><strong>{{ $errors->first('numero') }}</strong></span>
+                           value="{{!empty($domicilio) ? $domicilio->nro :'' }}">
+                    @if ($errors->has('nro'))
+                        <span class="help-block"><strong>{{ $errors->first('nro') }}</strong></span>
                     @endif
                 </div>
                 <div class="col-sm-1">

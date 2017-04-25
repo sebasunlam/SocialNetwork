@@ -32,7 +32,11 @@ class Perfil extends Model
     }
 
     public function domicilio (){
-        return $this->belongsToMany('App\Models\Domicilio','perfil_domicilio');
+        return $this->belongsToMany('App\Models\Domicilio','perfil_domicilio')->withPivot('timestamp');
+    }
+
+    public function imagen(){
+        return $this->belongsToMany('App\Models\Imagen');
     }
 
 //    public function imagenes(){

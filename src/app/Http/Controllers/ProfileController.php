@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Domicilio;
+use App\Models\Imagen;
 use Illuminate\Http\Request;
 use App\Models\Provincia;
 use App\Models\Perfil;
 use App\Models\Sexo;
 use App\User;
 use DB;
+use Illuminate\Http\UploadedFile;
+use Storage;
 
 class ProfileController extends Controller
 {
@@ -59,8 +62,7 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         //
-
-        $this->createUpdate($request,false);
+        $this->createUpdate($request);
         return redirect('profile');
     }
 
@@ -90,7 +92,24 @@ class ProfileController extends Controller
         $id = \Auth::user()->id;
         $currentuser = User::find($id);
 
-        return view("perfil.edit")->with('perfil', $currentuser->perfil)->with('sexos', Sexo::all())->with('provincias', Provincia::all());
+        $domicilio = Domicilio::with(['perfil' => function ($q) {
+            $id = \Auth::user()->id;
+            $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
+        }])->first();
+
+        $imagen = Imagen::with(['perfil' => function ($q) {
+            $id = \Auth::user()->id;
+            $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
+        }])->first();
+
+        return view("perfil.edit")
+            ->with('perfil', $currentuser->perfil)
+            ->with('sexos', Sexo::all())
+            ->with('provincias', Provincia::all())
+            ->with('domicilio', $domicilio)
+            ->with('imagen', $imagen)
+            ->with('departamento_id', $domicilio->localidad->departamento_id)
+            ->with('provincia_id', $domicilio->localidad->departamento->provincia_id);
 
     }
 
@@ -105,11 +124,12 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         //
-        $this->createUpdate($request,true);
+        $this->createUpdate($request);
+
         return back();
     }
 
-    private function createUpdate(Request $request,bool $update)
+    private function createUpdate(Request $request)
     {
 
         DB::beginTransaction(); //Start transaction!
@@ -118,8 +138,7 @@ class ProfileController extends Controller
             $id = \Auth::user()->id;
             $currentuser = User::find($id);
 
-
-            if ($update) {
+            if (!is_null($currentuser->perfil)) {
                 $currentuser->perfil()->update([
                     'nombre' => $request['nombre'],
                     'apellido' => $request['apellido'],
@@ -127,16 +146,21 @@ class ProfileController extends Controller
                     'fechanacimiento' => $request['fechanacimiento'],
                     'sexo_id' => $request['sexo_id']
                 ]);
-                $currentuser->perfil()->domicilio()->orderBy('timestamp', 'desc')->first()->update([
+
+                $domicilio = Domicilio::with(['perfil' => function ($q) {
+                    $id = \Auth::user()->id;
+                    $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
+                }])->first();
+
+                $domicilio->update([
                     'calle' => $request['calle'],
                     'nro' => $request['nro'],
                     'localidad_id' => $request['localidad_id'],
-                    'lat' => 1,
-                    'long' => 1
+                    'lat' => $request['lat'],
+                    'long' => $request['long']
                 ]);
 
             } else {
-
 
                 $perfil = $currentuser->perfil()->create([
                     'nombre' => $request['nombre'],
@@ -151,13 +175,28 @@ class ProfileController extends Controller
                     'calle' => $request['calle'],
                     'nro' => $request['nro'],
                     'localidad_id' => $request['localidad_id'],
-                    'lat' => 1,
-                    'long' => 1
+                    'lat' => $request['lat'],
+                    'long' => $request['long']
                 ]);
 
                 $domicilio->save();
 
-                $perfil ->domicilio()->attach($domicilio);
+                $perfil->domicilio()->attach($domicilio);
+            }
+
+
+            if ($request->hasFile('photo') && $request->photo->isValid()) {
+
+                dd($request->file('photo')->getRealPath());
+                $path = $request->photo->store('profiles');
+
+                $imagen = new Imagen([
+                    'url' => $path
+                ]);
+
+                $imagen->save();
+
+                $perfil->imagen()->attach($imagen);
             }
 
 

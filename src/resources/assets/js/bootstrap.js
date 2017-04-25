@@ -11,6 +11,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap-sass');
+    require('bootstrap-datepicker');
+    require('bootstrap-datepicker/js/locales/bootstrap-datepicker.es')
 } catch (e) {}
 
 /**

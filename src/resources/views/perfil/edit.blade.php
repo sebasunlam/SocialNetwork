@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container" >
-        <form class="form-horizontal" role="form" method="POST" action="/profile/update">
+        <form class="form-horizontal" role="form" method="POST" action="/profile/update" enctype="multipart/form-data">
             {{method_field('PATCH')}}
             <input id="invisible_id" name="invisible" type="hidden" value="{{$perfil->id}}">
             @include('perfil.createeditpartial')
