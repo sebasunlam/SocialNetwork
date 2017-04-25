@@ -138,6 +138,7 @@ class ProfileController extends Controller
             } else {
 
 
+                $perfil = $currentuser->perfil()->create([
                     'nombre' => $request['nombre'],
                     'apellido' => $request['apellido'],
                     'telefono' => $request['telefono'],
@@ -156,6 +157,7 @@ class ProfileController extends Controller
 
                 $domicilio->save();
 
+                $perfil ->domicilio()->attach($domicilio);
             }
 
 
