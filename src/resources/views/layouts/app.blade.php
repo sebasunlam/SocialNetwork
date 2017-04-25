@@ -59,7 +59,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">
-                                {{ Auth::user()->email }} <span class="caret"></span>
+                                {{ empty(Auth::user()->perfil) ? Auth::user()->email :Auth::user()->perfil->nombre .' '. Auth::user()->perfil->apellido}} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">

@@ -14,12 +14,13 @@ class Imagen extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'url'
+        'url',
+        'extension'
     ];
 
 
     public function perfil(){
-        return $this->belongsToMany('App\Models\Perfil');
+        return $this->belongsToMany('App\Models\Perfil','perfil_imagen')->withPivot('timestamp');
     }
 
     protected $guarded = [];

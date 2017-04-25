@@ -10,8 +10,8 @@ use App\Models\Perfil;
 use App\Models\Sexo;
 use App\User;
 use DB;
-use Illuminate\Http\UploadedFile;
 use Storage;
+use Auth;
 
 class ProfileController extends Controller
 {
@@ -42,7 +42,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        $id = \Auth::user()->id;
+        $id = Auth::user()->id;
         $currentuser = User::find($id);
 
         $perfil = $currentuser->perfil;
@@ -89,25 +89,34 @@ class ProfileController extends Controller
         //
 
 
-        $id = \Auth::user()->id;
+        $id = Auth::user()->id;
         $currentuser = User::find($id);
 
         $domicilio = Domicilio::with(['perfil' => function ($q) {
-            $id = \Auth::user()->id;
+            $id = Auth::user()->id;
             $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
         }])->first();
 
         $imagen = Imagen::with(['perfil' => function ($q) {
-            $id = \Auth::user()->id;
-            $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
+            $id = Auth::user()->id;
+            $q->where('user_id', $id)->latest();
         }])->first();
+
+        $file = null;
+        $extension = null;
+
+        if (!empty($imagen) && Storage::disk('local')->exists($imagen->url)) {
+            $file = Storage::get($imagen->url);
+            $extension = $imagen->extension;
+        }
+//dd('data:image/' . pathinfo($file, PATHINFO_EXTENSION) . ';base64,' . empty($file) ? base64_encode($file) : '');
 
         return view("perfil.edit")
             ->with('perfil', $currentuser->perfil)
             ->with('sexos', Sexo::all())
             ->with('provincias', Provincia::all())
             ->with('domicilio', $domicilio)
-            ->with('imagen', $imagen)
+            ->with('imagen', !empty($extension) && !empty($file) ?  'data:image/' . $extension. ';base64,' . base64_encode($file) : null )
             ->with('departamento_id', $domicilio->localidad->departamento_id)
             ->with('provincia_id', $domicilio->localidad->departamento->provincia_id);
 
@@ -135,7 +144,7 @@ class ProfileController extends Controller
         DB::beginTransaction(); //Start transaction!
 
         try {
-            $id = \Auth::user()->id;
+            $id = Auth::user()->id;
             $currentuser = User::find($id);
 
             if (!is_null($currentuser->perfil)) {
@@ -148,7 +157,7 @@ class ProfileController extends Controller
                 ]);
 
                 $domicilio = Domicilio::with(['perfil' => function ($q) {
-                    $id = \Auth::user()->id;
+                    $id = Auth::user()->id;
                     $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
                 }])->first();
 
@@ -187,16 +196,17 @@ class ProfileController extends Controller
 
             if ($request->hasFile('photo') && $request->photo->isValid()) {
 
-                dd($request->file('photo')->getRealPath());
+
                 $path = $request->photo->store('profiles');
 
                 $imagen = new Imagen([
-                    'url' => $path
+                    'url' => $path,
+                    'extension' => $request->photo->extension()
                 ]);
 
                 $imagen->save();
 
-                $perfil->imagen()->attach($imagen);
+                $currentuser->perfil->imagen()->attach($imagen);
             }
 
 

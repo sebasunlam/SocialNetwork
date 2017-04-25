@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Aedium
  */
-class Aedium extends Model
+class Media extends Model
 {
     protected $table = 'media';
 
@@ -16,7 +16,8 @@ class Aedium extends Model
     protected $fillable = [
         'url',
         'media_type_id',
-        'local'
+        'local',
+        'extension'
     ];
 
     protected $guarded = [];

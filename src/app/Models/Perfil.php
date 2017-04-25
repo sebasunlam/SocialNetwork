@@ -36,7 +36,7 @@ class Perfil extends Model
     }
 
     public function imagen(){
-        return $this->belongsToMany('App\Models\Imagen');
+        return $this->belongsToMany('App\Models\Imagen','perfil_imagen')->withPivot('timestamp');
     }
 
 //    public function imagenes(){

@@ -197,7 +197,7 @@
     <div class="col-sm-12" align="center">
         <div>
             @if(!empty($imagen))
-                <img id="img" src="$imagen->url" alt="" class="img-thumbnail profile">
+                <img id="img" src="{{$imagen}}" alt="" class="img-thumbnail profile">
             @else
                 <img id="img" src="/img/no-avatar.png" alt="Suba una imagen" class="img-thumbnail profile">
             @endif
