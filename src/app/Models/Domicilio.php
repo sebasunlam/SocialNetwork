@@ -11,23 +11,28 @@ class Domicilio extends Model
 {
     protected $table = 'domicilio';
 
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
 
     protected $fillable = [
         'calle',
-        'nro',
+        'numero',
         'lat',
         'long',
+        'perfil_id',
         'localidad_id'
     ];
 
     protected $guarded = [];
     public function perfil (){
-        return $this->belongsToMany('App\Models\Perfil','perfil_domicilio')->withPivot('timestamp');
+        return $this->belongsTo('App\Models\Perfil');
     }
 
     public function localidad(){
-        return $this->belongsTo('App\Models\Localidad','localidad_id');
+        return $this->belongsTo('App\Models\Localidad');
     }
+
+
         
 }

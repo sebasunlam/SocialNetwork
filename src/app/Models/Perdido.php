@@ -11,17 +11,22 @@ class Perdido extends Model
 {
     protected $table = 'perdido';
 
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
 
     protected $fillable = [
-        'desde',
-        'hasta',
         'lat',
-        'long',
-        'mascota_id'
+        'long'
     ];
 
     protected $guarded = [];
 
-        
+        public function mascota(){
+            return $this->belongsTo('App\Models\Mascota');
+        }
+
+    public function encotrado(){
+        $this->hasMany('App\Models\Encontrado');
+    }
 }

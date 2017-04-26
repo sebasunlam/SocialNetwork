@@ -12,14 +12,13 @@ class User extends Authenticatable
 
     protected $table = 'user';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'email',
         'password',
-        'fechaCreacion',
         'facebookId',
         'facebookToken',
         'facebookRefreshToken',
@@ -30,7 +29,7 @@ class User extends Authenticatable
 
     public function perfil()
     {
-        return $this->hasOne('App\Models\Perfil','user_id');
+        return $this->hasOne('App\Models\Perfil');
     }
 
     protected $guarded = [];

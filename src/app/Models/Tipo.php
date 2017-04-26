@@ -11,6 +11,8 @@ class Tipo extends Model
 {
     protected $table = 'tipo';
 
+    protected $primaryKey = 'id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,5 +22,8 @@ class Tipo extends Model
 
     protected $guarded = [];
 
+    public function mascota(){
+        return $this->hasMany('App\Models\Mascota');
+    }
         
 }

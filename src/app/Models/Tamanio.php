@@ -14,7 +14,8 @@ class Tamanio extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion'
+        'descripcion',
+        'enum'
     ];
 
     protected $guarded = [];

@@ -11,15 +11,19 @@ class Visita extends Model
 {
     protected $table = 'visitas';
 
-    public $timestamps = false;
+    protected $primaryKey = 'id;';
 
-    protected $fillable = [
-        'timestamp',
-        'mascota_id',
-        'perfil_id'
-    ];
+    public $timestamps = true;
+
+
 
     protected $guarded = [];
+    public function mascota(){
+        return $this->belongsTo('App\Models\Mascota');
+    }
 
+    public function perfil(){
+        return $this->belongsTo('App\Models\Perfil');
+    }
         
 }

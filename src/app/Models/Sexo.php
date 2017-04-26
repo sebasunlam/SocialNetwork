@@ -11,6 +11,8 @@ class Sexo extends Model
 {
     protected $table = 'sexo';
 
+    protected  $primaryKey = 'id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,5 +22,12 @@ class Sexo extends Model
 
     protected $guarded = [];
 
+    public function perfil(){
+        return $this->hasMany('App\Models\Perfil');
+    }
+
+    public function mascota(){
+        return $this->hasMany('App\Models\Mascota');
+    }
         
 }

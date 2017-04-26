@@ -14,11 +14,16 @@ class Raza extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion',
-        'tipo_id'
+        'descripcion'
     ];
 
     protected $guarded = [];
 
-        
+    public function mascota(){
+        return $this->hasMany('App\Models\Mascota');
+    }
+
+    public function tipo(){
+        return $this->belongsTo('App\Models\Tipo');
+    }
 }

@@ -11,7 +11,9 @@ class Imagen extends Model
 {
     protected $table = 'imagen';
 
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
 
     protected $fillable = [
         'url',
@@ -20,7 +22,15 @@ class Imagen extends Model
 
 
     public function perfil(){
-        return $this->belongsToMany('App\Models\Perfil','perfil_imagen')->withPivot('timestamp');
+        return $this->belongsToMany('App\Models\Perfil');
+    }
+
+    public function mascota(){
+        return $this->belongsToMany('App\Models\Mascota');
+    }
+
+    public function encotrado(){
+        $this->hasMany('App\Models\Encontrado');
     }
 
     protected $guarded = [];

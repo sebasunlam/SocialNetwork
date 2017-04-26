@@ -11,7 +11,7 @@ class Perfil extends Model
 {
     protected $table = 'perfil';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $primaryKey = 'id';
 
@@ -20,8 +20,8 @@ class Perfil extends Model
         'nombre',
         'fechanacimiento',
         'telefono',
-        'user_id',
-        'sexo_id'
+        'sexo_id',
+        'user_id'
     ];
 
     protected $guarded = [];
@@ -32,15 +32,35 @@ class Perfil extends Model
     }
 
     public function domicilio (){
-        return $this->belongsToMany('App\Models\Domicilio','perfil_domicilio')->withPivot('timestamp');
+        return $this->hasMany('App\Models\Domicilio');
     }
 
     public function imagen(){
-        return $this->belongsToMany('App\Models\Imagen','perfil_imagen')->withPivot('timestamp');
+        return $this->belongsToMany('App\Models\Imagen');
     }
 
-//    public function imagenes(){
-//        return $this->hasMany('App\Models\Imagen');
-//    }
+    public function mascota(){
+        return $this->hasMany('App\Models\Mascota');
+    }
+
+    public function sigue(){
+        return $this->belongsToMany('App\Models\Mascota');
+    }
+
+    public function like(){
+        return $this->belongsToMany('App\Models\Post','perfil_like_post')->using('App\Model\PerfilLikePost');
+    }
+
+    public function sexo(){
+        return $this->belongsTo('App\Models\Sexo');
+    }
+
+    public function visita(){
+        return $this->hasMany('App\Models\Visita');
+    }
+
+    public function encotrado(){
+        $this->hasMany('App\Models\Encontrado');
+    }
         
 }

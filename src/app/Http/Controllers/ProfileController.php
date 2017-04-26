@@ -92,15 +92,12 @@ class ProfileController extends Controller
         $id = Auth::user()->id;
         $currentuser = User::find($id);
 
-        $domicilio = Domicilio::with(['perfil' => function ($q) {
-            $id = Auth::user()->id;
-            $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
-        }])->first();
 
-        $imagen = Imagen::with(['perfil' => function ($q) {
-            $id = Auth::user()->id;
-            $q->where('user_id', $id)->latest();
-        }])->first();
+
+//        $imagen = Imagen::with(['perfil' => function ($q) {
+//            $id = Auth::user()->id;
+//            $q->where('user_id', $id)->latest();
+//        }])->first();
 
         $file = null;
         $extension = null;
@@ -109,16 +106,16 @@ class ProfileController extends Controller
             $file = Storage::get($imagen->url);
             $extension = $imagen->extension;
         }
-//dd('data:image/' . pathinfo($file, PATHINFO_EXTENSION) . ';base64,' . empty($file) ? base64_encode($file) : '');
+
 
         return view("perfil.edit")
             ->with('perfil', $currentuser->perfil)
             ->with('sexos', Sexo::all())
             ->with('provincias', Provincia::all())
-            ->with('domicilio', $domicilio)
+            ->with('domicilio', $currentuser->perfil->domicilio->first())
             ->with('imagen', !empty($extension) && !empty($file) ?  'data:image/' . $extension. ';base64,' . base64_encode($file) : null )
-            ->with('departamento_id', $domicilio->localidad->departamento_id)
-            ->with('provincia_id', $domicilio->localidad->departamento->provincia_id);
+            ->with('departamento_id', $currentuser->perfil->domicilio->first()->localidad->departamento_id)
+            ->with('provincia_id', $currentuser->perfil->domicilio->first()->localidad->departamento->provincia_id);
 
     }
 
@@ -156,14 +153,9 @@ class ProfileController extends Controller
                     'sexo_id' => $request['sexo_id']
                 ]);
 
-                $domicilio = Domicilio::with(['perfil' => function ($q) {
-                    $id = Auth::user()->id;
-                    $q->where('user_id', $id)->orderBy('pivot_timestamp', 'desc');
-                }])->first();
-
-                $domicilio->update([
+                $currentuser->perfil->domicilio->first()->update([
                     'calle' => $request['calle'],
-                    'nro' => $request['nro'],
+                    'numero' => $request['numero'],
                     'localidad_id' => $request['localidad_id'],
                     'lat' => $request['lat'],
                     'long' => $request['long']
@@ -182,15 +174,16 @@ class ProfileController extends Controller
 
                 $domicilio = new Domicilio([
                     'calle' => $request['calle'],
-                    'nro' => $request['nro'],
+                    'numero' => $request['numero'],
                     'localidad_id' => $request['localidad_id'],
                     'lat' => $request['lat'],
-                    'long' => $request['long']
+                    'long' => $request['long'],
+                    'perfil_id' => $perfil->id
                 ]);
 
                 $domicilio->save();
 
-                $perfil->domicilio()->attach($domicilio);
+
             }
 
 

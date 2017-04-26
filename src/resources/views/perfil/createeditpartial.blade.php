@@ -77,7 +77,7 @@
             function setMarker() {
                 var address = $("#provinciaId option:selected").text() + ',' +
                     $("#departamentoId option:selected").text() + ',' +
-                    $("#localidad_id option:selected").text() + ',' + $("#calle").val() + ' ' + $("#nro").val();
+                    $("#localidad_id option:selected").text() + ',' + $("#calle").val() + ' ' + $("#numero").val();
                 var latLng;
                 return $.get("https://maps.googleapis.com/maps/api/geocode/json", {
                     address: address,
@@ -330,12 +330,12 @@
                 </span>
                     @endif
                 </div>
-                <label for="nro" class="col-sm-2 col-md-2 control-label">Nro</label>
+                <label for="numero" class="col-sm-2 col-md-2 control-label">Nro</label>
                 <div class="col-sm-9 col-md-2">
-                    <input type="text" id="nro" name="nro" class="form-control"
-                           value="{{!empty($domicilio) ? $domicilio->nro :'' }}">
-                    @if ($errors->has('nro'))
-                        <span class="help-block"><strong>{{ $errors->first('nro') }}</strong></span>
+                    <input type="text" id="numero" name="numero" class="form-control"
+                           value="{{!empty($domicilio) ? $domicilio->numero :'' }}">
+                    @if ($errors->has('numero'))
+                        <span class="help-block"><strong>{{ $errors->first('numero') }}</strong></span>
                     @endif
                 </div>
                 <div class="col-sm-1">

@@ -11,16 +11,27 @@ class Post extends Model
 {
     protected $table = 'post';
 
-    public $timestamps = false;
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
 
     protected $fillable = [
-        'content',
-        'timestamp',
-        'media_id',
-        'shared_post_id'
+        'content'
     ];
 
     protected $guarded = [];
+
+    public function mascota(){
+        return $this->belongsTo('App\Model\Mascota');
+    }
+
+    public function likedBy(){
+        return $this->belongsToMany('App\Model\Perfil','perfil_like_post')->using('App\Models\PerfilLikePost');
+    }
+
+    public function media(){
+        return $this->belongsTo('App\Model\Media');
+    }
 
         
 }

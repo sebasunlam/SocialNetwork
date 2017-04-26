@@ -11,19 +11,26 @@ class Encontrado extends Model
 {
     protected $table = 'encontrado';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'contacto',
-        'timestamp',
-        'perdido_id',
-        'perfil_id',
-        'imagen_id',
-        'aceptada',
-        'fecha_aceptacion'
+        'aceptada'
     ];
 
     protected $guarded = [];
+
+    public function perfil(){
+        $this->belongsTo('App\Models\Perfil');
+    }
+
+    public function imagen(){
+        $this->belongsTo('App\Models\Imagen');
+    }
+
+    public function perdido(){
+        $this->belongsTo('App\Models\Imagen');
+    }
 
         
 }

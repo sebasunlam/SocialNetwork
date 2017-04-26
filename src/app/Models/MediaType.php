@@ -20,5 +20,9 @@ class MediaType extends Model
 
     protected $guarded = [];
 
+    public function media(){
+        return $this->hasMany('App\Models\Media');
+    }
+
         
 }
