@@ -136,9 +136,11 @@ class ProfileController extends Controller
 
         DB::beginTransaction(); //Start transaction!
 
+        $id = Auth::user()->id;
+        $currentuser = User::find($id);
+        
         try {
-            $id = Auth::user()->id;
-            $currentuser = User::find($id);
+
 
             if (!is_null($currentuser->perfil)) {
                 $currentuser->perfil()->update([
@@ -183,20 +185,8 @@ class ProfileController extends Controller
             }
 
 
-            $path = $request->photo->store('profiles');
-
-            if ($request->hasFile('photo') && $request->photo->isValid()) {
-                $imagen = new Imagen([
-                    'url' => $path,
-                    'extension' => $request->photo->extension()
-                ]);
-
-                $imagen->save();
-
-                $currentuser->perfil->imagen()->sync($imagen);
 
 
-            }
 
 
         } catch (\Exception $e) {
@@ -205,6 +195,21 @@ class ProfileController extends Controller
             throw $e;
         }
 
-DB::commit();
-}
+        $path = $request->photo->store('profiles');
+
+        if ($request->hasFile('photo') && $request->photo->isValid()) {
+            $imagen = new Imagen([
+                'url' => $path,
+                'extension' => $request->photo->extension()
+            ]);
+
+            $imagen->save();
+
+            $currentuser->perfil->imagen()->sync($imagen);
+
+
+        }
+        DB::commit();
+
+    }
 }
