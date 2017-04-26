@@ -92,12 +92,8 @@ class ProfileController extends Controller
         $id = Auth::user()->id;
         $currentuser = User::find($id);
 
+        $imagen = $currentuser->perfil->imagen()->latest()->first();
 
-
-//        $imagen = Imagen::with(['perfil' => function ($q) {
-//            $id = Auth::user()->id;
-//            $q->where('user_id', $id)->latest();
-//        }])->first();
 
         $file = null;
         $extension = null;
@@ -113,7 +109,7 @@ class ProfileController extends Controller
             ->with('sexos', Sexo::all())
             ->with('provincias', Provincia::all())
             ->with('domicilio', $currentuser->perfil->domicilio->first())
-            ->with('imagen', !empty($extension) && !empty($file) ?  'data:image/' . $extension. ';base64,' . base64_encode($file) : null )
+            ->with('imagen', !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null)
             ->with('departamento_id', $currentuser->perfil->domicilio->first()->localidad->departamento_id)
             ->with('provincia_id', $currentuser->perfil->domicilio->first()->localidad->departamento->provincia_id);
 
@@ -187,11 +183,9 @@ class ProfileController extends Controller
             }
 
 
+            $path = $request->photo->store('profiles');
+
             if ($request->hasFile('photo') && $request->photo->isValid()) {
-
-
-                $path = $request->photo->store('profiles');
-
                 $imagen = new Imagen([
                     'url' => $path,
                     'extension' => $request->photo->extension()
@@ -199,7 +193,9 @@ class ProfileController extends Controller
 
                 $imagen->save();
 
-                $currentuser->perfil->imagen()->attach($imagen);
+                $currentuser->perfil->imagen()->sync($imagen);
+
+
             }
 
 
@@ -209,6 +205,6 @@ class ProfileController extends Controller
             throw $e;
         }
 
-        DB::commit();
-    }
+DB::commit();
+}
 }
