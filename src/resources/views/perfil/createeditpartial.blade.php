@@ -36,6 +36,8 @@
         }
         $(document).ready(function () {
 
+            var marker;
+
             $('.input-group.date').datepicker({
                 format: "yyyy-mm-dd",
                 language: "es"
@@ -75,6 +77,10 @@
 
 
             function setMarker() {
+
+                if (marker != undefined)
+                    marker.setMap(null);
+
                 var address = $("#provinciaId option:selected").text() + ',' +
                     $("#departamentoId option:selected").text() + ',' +
                     $("#localidad_id option:selected").text() + ',' + $("#calle").val() + ' ' + $("#numero").val();
@@ -86,7 +92,7 @@
                     if (data.status == 'OK') {
                         latLng = new google.maps.LatLng(data.results[0].geometry.location.lat, data.results[0].geometry.location.lng);
 
-                        var marker = new google.maps.Marker({
+                        marker = new google.maps.Marker({
                             position: latLng,
                             map: map,
                             title: address,
@@ -98,6 +104,7 @@
                         map.setZoom(13);
                         map.setCenter(latLng);
                         marker.setMap(map);
+
                         $("#lat").val(data.results[0].geometry.location.lat);
                         $("#long").val(data.results[0].geometry.location.lng);
                     } else {
@@ -122,7 +129,7 @@
                 }
             }
 
-            $("#photo").change(function(){
+            $("#photo").change(function () {
                 readURL(this);
             });
 
@@ -173,7 +180,6 @@
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-
 
                     map.setCenter(pos);
                 });

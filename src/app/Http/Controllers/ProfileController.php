@@ -138,7 +138,7 @@ class ProfileController extends Controller
 
         $id = Auth::user()->id;
         $currentuser = User::find($id);
-        
+
         try {
 
 
