@@ -35,6 +35,10 @@ class Mascota extends Model
         return $this->belongsTo('App\Models\Perfil');
     }
 
+    public function seguido(){
+        return $this->belongsToMany('App\Models\Perfil','mascota_perfil');
+    }
+
     public function sexo(){
         return $this->belongsTo('App\Models\Sexo');
     }

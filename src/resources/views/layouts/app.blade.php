@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="/css/bootstrap-datepicker3.css" rel="stylesheet">
+    <link href="/fonts/flaticon.css" rel="stylesheet">
 
 @yield('styles')
 <!-- Scripts -->

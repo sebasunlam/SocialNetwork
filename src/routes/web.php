@@ -36,5 +36,5 @@ Route::patch('profile/update','ProfileController@update')->name('profile.update'
 Route::get('profile/show','ProfileController@show')->name('profile.show');
 
 /*Feed*/
-Route::get('feed','FeedControllerq@index')->name('feed');
+Route::get('feed','FeedController@index')->name('feed');
 

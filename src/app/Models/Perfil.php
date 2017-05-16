@@ -44,7 +44,7 @@ class Perfil extends Model
     }
 
     public function sigue(){
-        return $this->belongsToMany('App\Models\Mascota');
+        return $this->belongsToMany('App\Models\Mascota','mascota_perfil');
     }
 
     public function like(){
