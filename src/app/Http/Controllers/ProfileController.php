@@ -73,9 +73,14 @@ class ProfileController extends Controller
      * @return \Illuminate\Http\Response
      * @internal param int $id
      */
-    public function show(Perfil $perfil)
+    public function show()
     {
         //        return view("perfil.edit",compact('perfil'));
+        $id = Auth::user()->id;
+        $currentuser = User::find($id);
+        $perfil = $currentuser->perfil();
+
+        return view("perfil.show")-with("perfil",$perfil);
     }
 
     /**

@@ -171,7 +171,11 @@
                 modal.hidePleaseWait();
             });
 
-            map.setCenter(new google.maps.LatLng({{$domicilio->long}},{{$domicilio->long}}));
+
+
+            map.setCenter(new google.maps.LatLng('{{$domicilio->lat}}','{{$domicilio->long}}'));
+
+
             @else
 
             if (navigator.geolocation) {

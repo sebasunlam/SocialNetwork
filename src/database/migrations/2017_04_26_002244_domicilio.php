@@ -19,7 +19,7 @@ class Domicilio extends Migration
 
             $table->timestamps();
             $table->string('calle');
-            $table->tinyInteger('numero')->nullable();
+            $table->integer('numero')->nullable();
             $table->double('lat');
             $table->double('long');
             $table->integer('perfil_id')->unsigned();
