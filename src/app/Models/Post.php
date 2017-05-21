@@ -16,21 +16,23 @@ class Post extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'content'
+        'content',
+        'media_id',
+        'mascota_id'
     ];
 
     protected $guarded = [];
 
     public function mascota(){
-        return $this->belongsTo('App\Model\Mascota');
+        return $this->belongsTo('App\Models\Mascota','mascota_id');
     }
 
     public function likedBy(){
-        return $this->belongsToMany('App\Model\Perfil','perfil_like_post')->using('App\Models\PerfilLikePost');
+        return $this->belongsToMany('App\Models\Perfil','perfil_like_post')->using('App\Models\PerfilLikePost')->withPivot('created_at');
     }
 
     public function media(){
-        return $this->belongsTo('App\Model\Media');
+        return $this->belongsTo('App\Models\Media');
     }
 
         

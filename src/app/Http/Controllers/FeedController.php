@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mascota;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use App\Models\Perfil;
 use DB;
@@ -21,85 +22,34 @@ class FeedController extends Controller
     {
         //
 
-        $id = \Auth::user()->id;
+        $id = Auth::user()->id;
         $currentuser = User::find($id);
-        $mascotas = $currentuser->perfil->sigue()->orderBy("created_at", "desc");
+        $mascotas = $currentuser->perfil->sigue()->orderBy("created_at", "desc")->get();
 
 
         $feeds = array();
         foreach ($mascotas as $mascota) {
-            $posts = $mascota->post()->orderBy("created_at", "desc");
+            $posts = $mascota->post()->orderBy("created_at", "desc")->get();
             foreach ($posts as $post) {
-                $feed = new \stdClass();
-                $feed->petName = $mascota->nombre;
-                $feed->timeStamp = $post->create_at;
-
-                //Tratamiento media
-                $media = $post->media();
-
-                if (empty($media)) {
-                    $feed->type = "texto";
-                } else {
-                    $feed->type = "media";
-
-                    if ($media->local) {
-                        $feed->mediaType = 'imagen';
-
-                        if (Storage::disk('local')->exists($media->url)) {
-                            $file = Storage::get($media->url);
-                            $extension = $media->extension;
-                        }
-                        $feed->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
-                    } else {
-                        $feed->mediaType = 'video';
-                        $feed->url = $media->url;
-                    }
-                }
-                //Fin tratamiento media
-
-                $feed->content = $post->content;
-                $comments = array();
-                $likes = $post->likedBy()->orderBy("created_at", "desc");
-                foreach ($likes as $like) {
-                    $comments[] = $like->coment;
-                }
-                $feed->comments = $comments;
+                $feeds[] = $this->MascotaToFeed($post,$mascota);
             }
-            $feeds[] = $feed;
         }
 
-        $id = Auth::user()->id;
-        $currentuser = User::find($id);
+        $misMascotas = $currentuser->perfil->mascota()->get();
 
-        $imagen = $currentuser->perfil->imagen()->latest()->first();
-
-
-        $file = null;
-        $extension = null;
-
-        if (!empty($imagen) && Storage::disk('local')->exists($imagen->url)) {
-            $file = Storage::get($imagen->url);
-            $extension = $imagen->extension;
+        foreach ($misMascotas as $mascota) {
+            $posts = $mascota->post()->orderBy("created_at", "desc")->get();
+            foreach ($posts as $post) {
+                $feeds[] = $this->MascotaToFeed($post,$mascota);
+            }
         }
 
-        //Profile data
-        $perfil = $currentuser->perfil;
-        $profile = new \stdClass();
-        $profile->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
-        $profile->nombre = $perfil->nombre;
-        $profile->apellido = $perfil->apellido;
-        $profile->following = $currentuser->perfil->sigue()->count();
 
-        //Followers Data
-        $misMascotas = $currentuser->perfil->mascota();
-        $followers = 0;
-        foreach ($misMascotas as $miMascota){
-            $followers+= $mascota->seguido()->count();
-        }
-        $profile->followers = $followers;
+
+
+
         return view("feed.index")
-            ->with("feeds", $feeds)
-            ->with("profile", $profile);
+            ->with("feeds", $feeds);
     }
 
     /**
@@ -166,5 +116,49 @@ class FeedController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    private function MascotaToFeed($post,$mascota){
+
+            $feed = new \stdClass();
+            $feed->id = $post->id;
+            $feed->petName = $mascota->nombre;
+            $feed->timeStamp = $post->create_at;
+
+            //Tratamiento media
+
+
+            if (is_null($post->media_id)) {
+                $feed->type = "texto";
+            } else {
+                $feed->type = "media";
+                $media = Media::find($post->media_id);
+                if ($media->local) {
+                    $feed->mediaType = 'imagen';
+
+                    if (Storage::disk('local')->exists($media->url)) {
+                        $file = Storage::get($media->url);
+                        $extension = $media->extension;
+                    }
+                    $feed->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
+                } else {
+                    $feed->mediaType = 'video';
+                    $feed->url = $media->url;
+                }
+            }
+            //Fin tratamiento media
+
+            $feed->content = $post->content;
+            $comments = array();
+            $likes = $post->likedBy()->orderBy("created_at", "desc")->get();
+            foreach ($likes as $like) {
+                $comments[] = $like->coment;
+            }
+            $feed->comments = $comments;
+            $feed->icon = $mascota->raza->tipo->like_text;
+            return $feed;
+
+
     }
 }

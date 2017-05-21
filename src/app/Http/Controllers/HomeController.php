@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -14,6 +15,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
     }
 
     /**
@@ -23,11 +25,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $id = Auth::user()->id;
-        $currentuser = User::find($id);
 
-        if($currentuser->perfil == null)
-            return view('perfil/create');
+        if (\Auth::check()) {
+            $id = Auth::user()->id;
+            $currentuser = User::find($id);
+            if ($currentuser->perfil == null){
+                return view('perfil/create');
+            }
+
+             return redirect('feed');
+
+        }
+
 
         return view('home');
     }

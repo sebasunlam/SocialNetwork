@@ -17,11 +17,15 @@ class Mascota extends Model
 
     protected $fillable = [
         'nombre',
-        'dia_nacimiento',
-        'mes_nacimiento',
-        'anio_nacimiento',
+        'dia',
+        'mes',
+        'anio',
+        'sexo_id',
+        'raza_id',
+        'tamanio_id',
         'adopcion',
-        'pareja'
+        'perdido',
+        'cita'
 
     ];
 

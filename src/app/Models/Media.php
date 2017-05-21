@@ -1,15 +1,21 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Sebastian
+ * Date: 21/05/2017
+ * Time: 4:19
+ */
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Aedium
+use Illuminate\Database\Eloquent\Model;
+/*
+ * Class PostMedia
  */
 class Media extends Model
 {
-    protected $table = 'media';
+    protected $table = 'postmedia';
 
     protected $primaryKey = 'id';
 
@@ -26,10 +32,4 @@ class Media extends Model
     public function post(){
         return $this->hasMany('App\Models\Post');
     }
-
-    public function mediaType(){
-        return $this->belongsTo('App\Models\MediaType');
-    }
-
-        
 }

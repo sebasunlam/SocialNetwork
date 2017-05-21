@@ -25,6 +25,7 @@ class Mascota extends Migration
             $table->boolean('perdido')->default(false);
             $table->boolean('cita')->default(false);
 
+
             $table->integer('perfil_id')->unsigned();
             $table->integer('sexo_id')->unsigned();
             $table->integer('tamanio_id')->unsigned();

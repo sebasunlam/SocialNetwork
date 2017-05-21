@@ -17,7 +17,7 @@ class Transferencia extends Migration
         Schema::create('post', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->string('cntent');
+            $table->string('content',2000);
             $table->integer('mascota_id')->unsigned();
             $table->integer('media_id')->unsigned()->nullable();
             $table->foreign('mascota_id')

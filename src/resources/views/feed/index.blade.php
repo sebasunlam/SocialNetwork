@@ -2,14 +2,9 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-2">
-            @include("feed.sidebar")
-        </div>
-        <div class="col-md-8">
-            @include("feed.content")
-        </div>
-        {{--<div class="col-md-2">--}}
-            {{--@include("lefbar")--}}
+        @include("feed.content")
+        {{--<div class="col-md-offset-1 col-md-2">--}}
+        {{--@include("lefbar")--}}
         {{--</div>--}}
     </div>
 @endsection

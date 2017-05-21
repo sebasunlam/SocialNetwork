@@ -31,7 +31,7 @@ class ProfileController extends Controller
             return redirect()->route('profile.create');
 
 
-        return redirect()->route('profile.edit');
+        return redirect()->route('feed');
 
     }
 
@@ -63,7 +63,7 @@ class ProfileController extends Controller
     {
         //
         $this->createUpdate($request);
-        return redirect('profile');
+        return redirect('feed');
     }
 
     /**
@@ -80,7 +80,7 @@ class ProfileController extends Controller
         $currentuser = User::find($id);
         $perfil = $currentuser->perfil();
 
-        return view("perfil.show")-with("perfil",$perfil);
+        return view("perfil.show") - with("perfil", $perfil);
     }
 
     /**
@@ -133,7 +133,7 @@ class ProfileController extends Controller
         //
         $this->createUpdate($request);
 
-        return back();
+        return redirect('feed');
     }
 
     private function createUpdate(Request $request)
@@ -190,10 +190,6 @@ class ProfileController extends Controller
             }
 
 
-
-
-
-
         } catch (\Exception $e) {
             //failed logic here
             DB::rollback();
@@ -210,7 +206,14 @@ class ProfileController extends Controller
 
             $imagen->save();
 
-            $currentuser->perfil->imagen()->sync($imagen);
+            if (empty($currentuser->perfil)) {
+                DB::commit();
+            }
+            if (!is_null($currentuser->perfil)) {
+                $currentuser->perfil->imagen()->sync($imagen);
+            } else {
+                $perfil->imagen()->sync($imagen);
+            }
 
 
         }

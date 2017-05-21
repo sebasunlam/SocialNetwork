@@ -16,6 +16,53 @@
     <link href="/fonts/flaticon.css" rel="stylesheet">
 
 @yield('styles')
+    <style type="text/css">
+        .profile-usermenu {
+            margin-top: 30px;
+        }
+
+        .profile-usermenu ul li {
+            border-bottom: 1px solid #f0f4f7;
+        }
+
+        .profile-usermenu ul li:last-child {
+            border-bottom: none;
+        }
+
+        .profile-usermenu ul li a {
+            color: #93a3b5;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .profile-usermenu ul li a i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .profile-usermenu ul li a:hover {
+            background-color: #fafcfd;
+            color: #5b9bd1;
+        }
+
+        .profile-usermenu ul li.active {
+            border-bottom: none;
+        }
+
+        .profile-usermenu ul li.active a {
+            color: #5b9bd1;
+            background-color: #f6f9fb;
+            border-left: 2px solid #5b9bd1;
+            margin-left: -2px;
+        }
+
+        .table-image{
+            min-width: 40px;
+            min-height: 40px;
+            max-width: 40px;
+            max-height: 40px;
+        }
+    </style>
 <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -60,7 +107,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">
-                                {{ empty(Auth::user()->perfil) ? Auth::user()->email :Auth::user()->perfil->nombre .' '. Auth::user()->perfil->apellido}} <span class="caret"></span>
+                                {{ empty(Auth::user()->perfil) ? Auth::user()->email :Auth::user()->perfil->nombre .' '. Auth::user()->perfil->apellido}}
+                                <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
@@ -83,8 +131,28 @@
             </div>
         </div>
     </nav>
+    @if(Auth::check() && !empty($profile))
+        <div class="col-md-3">
+            <div class="col-md-offset-1 col-md-11">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @include("layouts.sidebar")
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
 
-    @yield('content')
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+
+        </div>
+    @else
+        @yield('content')
+    @endif
+
+
 </div>
 
 <div class="modal fade" id="alertModal" role="dialog">

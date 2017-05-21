@@ -14,15 +14,11 @@ class Media extends Migration
     public function up()
     {
         //
-        Schema::create('media', function (Blueprint $table) {
+        Schema::create('postmedia', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url');
             $table->boolean('local');
             $table->string('extension');
-            $table->integer('media_type_id')->unsigned();
-            $table->foreign('media_type_id')
-                ->references('id')->on('media_type')
-                ->onDelete('cascade');
         });
     }
 
