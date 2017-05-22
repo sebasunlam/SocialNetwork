@@ -65,3 +65,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+src/.phpstorm.meta.php
+src/_ide_helper.php
+src/composer.lock

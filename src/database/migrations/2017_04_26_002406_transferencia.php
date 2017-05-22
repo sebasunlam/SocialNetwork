@@ -24,7 +24,7 @@ class Transferencia extends Migration
                 ->references('id')->on('mascota')
                 ->onDelete('cascade');
             $table->foreign('media_id')
-                ->references('id')->on('media')
+                ->references('id')->on('postmedia')
                 ->onDelete('cascade');
         });
 
