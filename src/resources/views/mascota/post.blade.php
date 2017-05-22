@@ -16,20 +16,20 @@
 
                                 <div class="radio col-md-3">
                                     <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="comment"
+                                        <input type="radio" name="media" id="optionsRadios1" value="comment"
                                                checked>
                                         Comentario
                                     </label>
                                 </div>
                                 <div class="radio col-md-3">
                                     <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="image">
+                                        <input type="radio" name="media" id="optionsRadios2" value="image">
                                         Imagen
                                     </label>
                                 </div>
                                 <div class="radio col-md-3">
                                     <label>
-                                        <input type="radio" name="optionsRadios" id="optionsRadios3" value="video">
+                                        <input type="radio" name="media" id="optionsRadios3" value="video">
                                         Video (Online)
                                     </label>
                                 </div>

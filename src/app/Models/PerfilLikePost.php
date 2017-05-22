@@ -9,6 +9,8 @@
 namespace App\Models;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 class PerfilLikePost extends Model
 {
     protected $table = 'perfil_like_post';
@@ -18,11 +20,20 @@ class PerfilLikePost extends Model
 
     protected $fillable = [
         'coment',
-        'like'
+        'like',
+        'perfil_id',
+        'post_id'
     ];
 
     protected $guarded = [];
 
+    public function post(){
+        return $this->belongsTo('App\Models\Post','post_id');
+    }
+
+    public function perfil(){
+        return $this->belongsTo('App\Models\Perfil','perfil_id');
+    }
 
 
 }

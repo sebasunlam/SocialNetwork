@@ -34,7 +34,7 @@ Route::get('profile/create','ProfileController@create')->name('profile.create')-
 Route::post('profile/store','ProfileController@store')->name('profile.store')->middleware('auth');
 Route::get('profile/edit','ProfileController@edit')->name('profile.edit')->middleware('auth');
 Route::patch('profile/update','ProfileController@update')->name('profile.update')->middleware('auth');
-Route::get('profile/show','ProfileController@show')->name('profile.show')->middleware('auth');
+Route::get('profile/show/{id}','ProfileController@show')->name('profile.show')->middleware('auth');
 
 /*Feed*/
 Route::get('feed','FeedController@index')->name('feed')->middleware('auth');

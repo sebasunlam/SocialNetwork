@@ -33,7 +33,7 @@ class HomeController extends Controller
                 return view('perfil/create');
             }
 
-             return redirect('feed');
+            return redirect(route('feed'));
 
         }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mascota;
 use App\Models\Media;
+use App\Models\PerfilLikePost;
 use Illuminate\Http\Request;
 use App\Models\Perfil;
 use DB;
@@ -11,7 +12,7 @@ use App\User;
 use Storage;
 use Auth;
 
-class FeedController extends Controller
+class FeedController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -31,7 +32,7 @@ class FeedController extends Controller
         foreach ($mascotas as $mascota) {
             $posts = $mascota->post()->orderBy("created_at", "desc")->get();
             foreach ($posts as $post) {
-                $feeds[] = $this->MascotaToFeed($post,$mascota);
+                $feeds[] = $this->PostToFeed($post,$mascota);
             }
         }
 
@@ -40,16 +41,21 @@ class FeedController extends Controller
         foreach ($misMascotas as $mascota) {
             $posts = $mascota->post()->orderBy("created_at", "desc")->get();
             foreach ($posts as $post) {
-                $feeds[] = $this->MascotaToFeed($post,$mascota);
+                $feeds[] = $this->PostToFeed($post,$mascota);
             }
         }
 
+        $array = array_values(array_sort($feeds , function ($value) {
+            return $value->timeStamp;
+        }));
 
-
+        $array = array_reverse(array_sort($array, function($value) {
+            return $value->timeStamp;
+        }));
 
 
         return view("feed.index")
-            ->with("feeds", $feeds);
+            ->with("feeds",$array);
     }
 
     /**
@@ -119,46 +125,5 @@ class FeedController extends Controller
     }
 
 
-    private function MascotaToFeed($post,$mascota){
 
-            $feed = new \stdClass();
-            $feed->id = $post->id;
-            $feed->petName = $mascota->nombre;
-            $feed->timeStamp = $post->create_at;
-
-            //Tratamiento media
-
-
-            if (is_null($post->media_id)) {
-                $feed->type = "texto";
-            } else {
-                $feed->type = "media";
-                $media = Media::find($post->media_id);
-                if ($media->local) {
-                    $feed->mediaType = 'imagen';
-
-                    if (Storage::disk('local')->exists($media->url)) {
-                        $file = Storage::get($media->url);
-                        $extension = $media->extension;
-                    }
-                    $feed->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
-                } else {
-                    $feed->mediaType = 'video';
-                    $feed->url = $media->url;
-                }
-            }
-            //Fin tratamiento media
-
-            $feed->content = $post->content;
-            $comments = array();
-            $likes = $post->likedBy()->orderBy("created_at", "desc")->get();
-            foreach ($likes as $like) {
-                $comments[] = $like->coment;
-            }
-            $feed->comments = $comments;
-            $feed->icon = $mascota->raza->tipo->like_text;
-            return $feed;
-
-
-    }
 }

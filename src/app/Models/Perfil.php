@@ -48,8 +48,11 @@ class Perfil extends Model
     }
 
     public function like(){
-        return $this->belongsToMany('App\Models\Post','perfil_like_post')->using('App\Model\PerfilLikePost');
+        return $this->hasMany('App\Models\PerfilLikePost');
     }
+//    public function like(){
+//        return $this->belongsToMany('App\Models\Post','perfil_like_post')->using('App\Model\PerfilLikePost');
+//    }
 
     public function sexo(){
         return $this->belongsTo('App\Models\Sexo');

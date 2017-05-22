@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use stdClass;
 use Storage;
 
-class MascotaController extends Controller
+class MascotaController extends BaseController
 {
     public function index()
     {
@@ -54,7 +54,7 @@ class MascotaController extends Controller
         //
         $this->createUpdate($request, -1);
 
-        return redirect('feed');
+        return redirect(route('feed'));
     }
 
     /**
@@ -74,43 +74,8 @@ class MascotaController extends Controller
         $posts = $mascota->post()->orderBy("created_at", "desc")->get();
         $feeds = array();
         foreach ($posts as $post) {
-            $feed = new \stdClass();
-            $feed->id = $post->id;
-            $feed->petName = $mascota->nombre;
-            $feed->timeStamp = $post->create_at;
 
-            //Tratamiento media
-
-
-            if (is_null($post->media_id)) {
-                $feed->type = "texto";
-            } else {
-                $feed->type = "media";
-                $media = Media::find($post->media_id);
-                if ($media->local) {
-                    $feed->mediaType = 'imagen';
-
-                    if (Storage::disk('local')->exists($media->url)) {
-                        $file = Storage::get($media->url);
-                        $extension = $media->extension;
-                    }
-                    $feed->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
-                } else {
-                    $feed->mediaType = 'video';
-                    $feed->url = $media->url;
-                }
-            }
-            //Fin tratamiento media
-
-            $feed->content = $post->content;
-            $comments = array();
-            $likes = $post->likedBy()->orderBy("created_at", "desc")->get();
-            foreach ($likes as $like) {
-                $comments[] = $like->coment;
-            }
-            $feed->comments = $comments;
-            $feed->icon = $mascota->raza->tipo->like_text;
-            $feeds[] = $feed;
+            $feeds[] = $this->PostToFeed($post, $mascota);
         }
 
 
@@ -156,7 +121,7 @@ class MascotaController extends Controller
 
         $this->createUpdate($request, $id);
 
-        return redirect('feed');
+        return redirect(route('feed'));
     }
 
     /**
@@ -181,35 +146,41 @@ class MascotaController extends Controller
         try {
             $post = $mascota->post()->create(['content' => $request["content"]]);
 
-            if ($request['media']) {
-                if ($request['local']) {
-                    $path = $request->photo->store('posts');
-                    if ($request->hasFile('photo') && $request->photo->isValid()) {
-                        $post->media()->create([
-                            'url' => $path,
-                            'local' => true,
-                            'extension' => $request->photo->extension()
-                        ]);
-                    }
-                } else {
-                    $post->media()->create([
-                        'url' => $request["videoUrl"],
-                        'local' => false
+            if ($request['media'] == 'image') {
+
+                $path = $request->photo->store('posts');
+                if ($request->hasFile('photo') && $request->photo->isValid()) {
+                    $media = $post->media()->create([
+                        'url' => $path,
+                        'local' => true,
+                        'extension' => $request->photo->extension()
                     ]);
+                    $post->update(["media_id" => $media->id]);
                 }
+            } else if ($request['media'] == 'video') {
+                $media = $post->media()->create([
+                    'url' => $request["videoUrl"],
+                    'local' => false,
+                    'extension' => "video"
+                ]);
+
+                $post->update(["media_id" => $media->id]);
             }
             DB::commit();
+
+            return redirect(route('mascota.show', ['id' => $mascota->id]));
         } catch (\Exception $e) {
             //failed logic here
             DB::rollback();
             throw $e;
         }
 
-        return redirect('mascota.show', ['id' => $mascota->id]);
+
     }
 
 
-    private function MapToViewModel(Mascota $mascota)
+    private
+    function MapToViewModel(Mascota $mascota)
     {
         $mascotaViewModel = new stdClass();
         $mascotaViewModel->id = $mascota->id;
@@ -258,7 +229,8 @@ class MascotaController extends Controller
 
     }
 
-    private function createUpdate(Request $request, $id)
+    private
+    function createUpdate(Request $request, $id)
     {
 
         DB::beginTransaction(); //Start transaction!

@@ -63,7 +63,7 @@ class ProfileController extends Controller
     {
         //
         $this->createUpdate($request);
-        return redirect('feed');
+        return redirect(route('feed'));
     }
 
     /**
@@ -133,7 +133,14 @@ class ProfileController extends Controller
         //
         $this->createUpdate($request);
 
-        return redirect('feed');
+        return redirect(route('feed'));
+    }
+
+    public function comment(Request $request,$returnurl){
+
+
+
+        return redirect($returnurl);
     }
 
     private function createUpdate(Request $request)

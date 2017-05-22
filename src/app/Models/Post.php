@@ -27,9 +27,13 @@ class Post extends Model
         return $this->belongsTo('App\Models\Mascota','mascota_id');
     }
 
-    public function likedBy(){
-        return $this->belongsToMany('App\Models\Perfil','perfil_like_post')->using('App\Models\PerfilLikePost')->withPivot('created_at');
+    public function perfil_like_post(){
+        return $this->hasMany('App\Models\PerfilLikePost');
     }
+
+//    public function perfil_like_post(){
+//        return $this->belongsToMany('App\Models\Perfil','perfil_like_post')->using('App\Models\PerfilLikePost')->withPivot('created_at');
+//    }
 
     public function media(){
         return $this->belongsTo('App\Models\Media');
