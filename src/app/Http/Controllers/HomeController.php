@@ -3,33 +3,19 @@
 namespace App\Http\Controllers;
 
 
+use App\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
 
-        if (\Auth::check()) {
+        if (Auth::check()) {
             $id = Auth::user()->id;
             $currentuser = User::find($id);
-            if ($currentuser->perfil == null){
+            if ($currentuser->perfil == null) {
                 return view('perfil/create');
             }
 
@@ -38,7 +24,7 @@ class HomeController extends Controller
         }
 
 
-        return view('home');
+        return view('welcome');
     }
 
 

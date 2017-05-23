@@ -61,7 +61,7 @@ class ManyToMany extends Migration
                 ->references('id')->on('perfil')
                 ->onDelete('cascade');
             $table->foreign('post_id')
-                ->references('id')->on('mascota')
+                ->references('id')->on('post')
                 ->onDelete('cascade');
         });
 

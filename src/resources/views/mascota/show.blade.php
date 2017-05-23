@@ -2,12 +2,33 @@
 
 
 
+
 @section('scripts')
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#imageData").hide();
             $("#videoData").hide();
 
+            function follow(mascotaId) {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('profile.follow')}}",
+                    type: "POST",
+                    data: {mascota_id: mascotaId},
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            }
+
+            $("#btnFollow").click(function () {
+                follow("{{$mascota->id}}")
+            });
 
             $(".radio").click(function () {
                 var value = $(this).find('input:radio').prop('value');
@@ -37,12 +58,10 @@
                     return 'error';
                 }
             }
-            $("#videoUrl").change(function(){
 
-
+            $("#videoUrl").change(function () {
                 var videoId = getId($("#videoUrl").val());
                 $("#videoUrl").val("https:///www.youtube.com/embed/" + videoId);
-
             });
         });
     </script>
@@ -55,11 +74,18 @@
         <div>
             <div class="twPc-button">
                 <!-- Twitter Button | you can get from: https://about.twitter.com/tr/resources/buttons#follow -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal"><i
-                            class="fa fa-commenting-o" aria-hidden="true"></i> Postear
-                </button>
-                <button type="button" class="btn btn-success"><i class="fa fa-forward" aria-hidden="true"></i> Seguir
-                </button>
+
+                @if(!$propietario)
+
+                    <button type="button" class="btn btn-success" id="btnFollow"><i class="fa fa-forward"
+                                                                                    aria-hidden="true"
+                        ></i> Seguir
+                    </button>
+                @else
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal"><i
+                                class="fa fa-commenting-o" aria-hidden="true"></i> Postear
+                    </button>
+                @endif
                 {{--<a href="https://twitter.com/mertskaplan" class="twitter-follow-button" data-show-count="false"--}}
                 {{--data-size="large" data-show-screen-name="false" data-dnt="true">Follow @mertskaplan</a>--}}
                 {{--<script>!function (d, s, id) {--}}

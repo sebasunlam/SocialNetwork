@@ -14,11 +14,12 @@ use App\Models\{
 | contains the "web" middleware group. Now create something great!
 |
 */
+//
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/','HomeController@index');
 Auth::routes();
 
 /*Parametricos*/
@@ -34,7 +35,9 @@ Route::get('profile/create','ProfileController@create')->name('profile.create')-
 Route::post('profile/store','ProfileController@store')->name('profile.store')->middleware('auth');
 Route::get('profile/edit','ProfileController@edit')->name('profile.edit')->middleware('auth');
 Route::patch('profile/update','ProfileController@update')->name('profile.update')->middleware('auth');
-Route::get('profile/show/{id}','ProfileController@show')->name('profile.show')->middleware('auth');
+Route::get('profile/show/{id}','ProfileController@show')->name('profile.show');
+Route::post('profile/comment','ProfileController@comment')->name('profile.comment')->middleware('auth');
+Route::post('profile/follow','ProfileController@follow')->name('profile.follow')->middleware('auth');
 
 /*Feed*/
 Route::get('feed','FeedController@index')->name('feed')->middleware('auth');

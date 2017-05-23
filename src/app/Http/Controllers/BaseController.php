@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Media;
 use App\Models\PerfilLikePost;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Storage;
 
 class BaseController extends Controller
@@ -80,6 +81,14 @@ class BaseController extends Controller
         $feed->comments = $comments;
 
         $feed->icon = $mascota->raza->tipo->like_text;
+
+        if(Auth::check()){
+            $sigueMascota = Auth::user()->perfil->sigue()->find($mascota->id);
+            $feed->canComment = !is_null($sigueMascota);
+        }else{
+            $feed->canComment = false;
+        }
+
 
         return $feed;
 

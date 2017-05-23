@@ -15,7 +15,8 @@
     <link href="/css/bootstrap-datepicker3.css" rel="stylesheet">
     <link href="/fonts/flaticon.css" rel="stylesheet">
 
-@yield('styles')
+
+    @yield('styles')
     <style type="text/css">
         .profile-usermenu {
             margin-top: 30px;
@@ -56,7 +57,7 @@
             margin-left: -2px;
         }
 
-        .table-image{
+        .table-image {
             min-width: 40px;
             min-height: 40px;
             max-width: 40px;
@@ -192,7 +193,7 @@
             display: block;
         }
     </style>
-<!-- Scripts -->
+    <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
@@ -272,9 +273,9 @@
         </div>
         <div class="col-md-8">
 
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
+            <div class="container-fluid">
+                @yield('content')
+            </div>
 
         </div>
     @else
@@ -323,8 +324,17 @@
 </div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+{{--<script>--}}
+    {{--$(document).ready(function () {--}}
+        {{--$.ajaxSetup({--}}
+            {{--headers: {--}}
+                {{--'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+            {{--}--}}
+        {{--});--}}
+    {{--});</script>--}}
 <script src="/js/common.js"></script>
 @yield('scripts')
+@yield('partial-scripts')
 
 </body>
 </html>

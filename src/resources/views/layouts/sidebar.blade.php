@@ -27,7 +27,7 @@
                         <li pet="{{$mascota->id}}">
                             <a  href="{{route('mascota.show',['id' => $mascota->id])}}" >
                                 <img src="/img/icons/{{$mascota->raza->tipo->like_text}}">
-                                {{$mascota->nombre}}  editar </a>
+                                {{$mascota->nombre}}</a>
                         </li>
                     @endforeach
                         <li><a href="{{route("mascota.create")}}"><i class="glyphicon glyphicon-plus"></i> Agregar mascota</a></li>

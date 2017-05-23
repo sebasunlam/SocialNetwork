@@ -1,3 +1,40 @@
+@section('partial-scripts')
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+
+
+            function comment(postId,coment,like) {
+                modal.showPleaseWait();
+
+                $.ajax({
+                    url:"{{route('profile.comment')}}",
+                    type:"POST",
+                    data:{post_id: postId,coment:coment,like:like,mascota_id:"{{$feed->petId}}"},
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function(){
+                    location.reload();
+                }).always(function(){
+                    modal.hidePleaseWait();
+                })
+
+
+            }
+
+            $(".btnLike").click(function(){
+                var postId = $(this).attr("postId");
+                comment(postId,$("#comment").val(),true);
+            })
+            $(".btnDisLike").click(function(){
+                var postId = $(this).attr("postId");
+                comment(postId,$("#comment").val(),true);
+            })
+        });
+    </script>
+@endsection
+
 <div class="panel panel-info">
     <div class="panel-heading">
         <a title="{{$feed->petName}}" href="{{route('mascota.show',['id'=>$feed->petId])}}"
@@ -34,9 +71,7 @@
                             <iframe class="embed-responsive-item" src="{{$feed->url}}"></iframe>
                         </div>
                     @else
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <img class="img-responsive img-rounded" src="{{$feed->image}}">
-                        </div>
+                        <img class="img-responsive img-rounded" src="{{$feed->image}}">
                     @endif
                 @endif
                 <p class="text-muted">
@@ -64,7 +99,7 @@
                             @endif
 
                         </a>
-                        <a  href="{{route('profile.show',['id'=>$comment->profileId])}}">
+                        <a href="{{route('profile.show',['id'=>$comment->profileId])}}">
                             <h3 class="text-info">{{$comment->profileName}}
                                 <small> publicado el {{$comment->timeStamp}}</small>
                             </h3>
@@ -83,22 +118,24 @@
             </div>
         @endforeach
         <hr>
+        @if($feed->canComment)
 
-        <div class="row">
-            <input type="hidden" id="postId" value="{{$feed->id}}">
-            <div class="col-md-9">
-                <input class="form-control " id="comment" placeholder="Di lo que piensas..."
-                       type="text">
-            </div>
-            <div class="btn-group col-md-3" role="group">
-                <button type="button" class="btn btn-success" id="btnLike">
-                    <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-up"></span>
-                </button>
-                <button type="button" class="btn btn-danger" id="btnDisLike">
-                    <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-down"></span>
-                </button>
-            </div>
+            <div class="row">
+                <input type="hidden" id="postId" value="{{$feed->id}}">
+                <div class="col-md-9">
+                    <input class="form-control " id="comment" placeholder="Di lo que piensas..."
+                           type="text">
+                </div>
+                <div class="btn-group col-md-3" role="group">
+                    <button type="button" class="btn btn-success btnLike" postId="{{$feed->id}}">
+                        <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-up"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger btnDisLike"  postId="{{$feed->id}}">
+                        <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-down"></span>
+                    </button>
+                </div>
 
-        </div>
+            </div>
+        @endif
     </div>
 </div>

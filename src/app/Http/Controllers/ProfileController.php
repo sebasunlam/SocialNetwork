@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Domicilio;
 use App\Models\Imagen;
+use App\Models\Mascota;
+use App\Models\PerfilLikePost;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Provincia;
 use App\Models\Perfil;
@@ -136,11 +139,39 @@ class ProfileController extends Controller
         return redirect(route('feed'));
     }
 
-    public function comment(Request $request,$returnurl){
+    public function comment(Request $request)
+    {
+        $mascota = Auth::user()->perfil->sigue()->find($request["mascota_id"]);
+        if (!is_null($mascota)) {
+            $mascota->post()->find($request["post_id"])->perfil_like_post()->create([
+                "coment" => is_null($request["coment"]) ? "" : $request["coment"],
+                "like" => $request["like"] ? 1 : 0,
+                "perfil_id" => Auth::user()->perfil->id
+            ]);
 
+            return redirect()->back();
+        }
 
+        return redirect(route('feed'));
 
-        return redirect($returnurl);
+    }
+
+    public function follow(Request $request)
+    {
+        $perfil = Auth::user()->perfil;
+        if (!$perfil->sigue()->find($request["mascota_id"]) && is_null($perfil->mascota()->find($request["mascotaId"]))) {
+
+            $mascotaToFollow = Mascota::find($request["mascota_id"]);
+
+            if (!is_null($mascotaToFollow)) {
+
+                $perfil->sigue()->attach($mascotaToFollow);
+
+                return redirect(route('mascota.show', ["id" => $mascotaToFollow->id]));
+            }
+        }
+
+        return redirect(route('feed'));
     }
 
     private function createUpdate(Request $request)

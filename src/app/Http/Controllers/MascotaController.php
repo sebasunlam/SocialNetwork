@@ -66,9 +66,19 @@ class MascotaController extends BaseController
     public function show($id)
     {
         //
-        $userId = Auth::user()->id;
-        $currentuser = User::find($userId);
-        $mascota = $currentuser->perfil->mascota()->find($id);
+        $mascota = null;
+        if(Auth::check()){
+            $userId = Auth::user()->id;
+            $currentuser = User::find($userId);
+            $mascota = $currentuser->perfil->mascota()->find($id);
+        }
+
+        $propietario = true;
+        if(is_null($mascota)){
+            $mascota = Mascota::find($id);
+            $propietario = false;
+        }
+
         $followers = $mascota->seguido()->count();
 
         $posts = $mascota->post()->orderBy("created_at", "desc")->get();
@@ -83,7 +93,8 @@ class MascotaController extends BaseController
             ->with('mascota', $this->MapToViewModel($mascota))
             ->with('followers', $followers)
             ->with("feeds", $feeds)
-            ->with('posts', $posts->count());
+            ->with('posts', $posts->count())
+            ->with('propietario',$propietario);
     }
 
     /**
