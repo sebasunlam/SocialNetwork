@@ -284,7 +284,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="sexo_id" class="col-sm-2 col-md-3 control-label">Telefono</label>
+                <label for="sexo_id" class="col-sm-2 col-md-3 control-label">Sexo</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="sexo_id" name="sexo_id" class="form-control">
                         @foreach( $sexos as $sexo)
