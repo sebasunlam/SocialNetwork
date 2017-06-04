@@ -1,38 +1,45 @@
 @section('partial-scripts')
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
 
 
-
-            function comment(postId,coment,like) {
+            function comment(postId, coment, like) {
                 modal.showPleaseWait();
 
                 $.ajax({
-                    url:"{{route('profile.comment')}}",
-                    type:"POST",
-                    data:{post_id: postId,coment:coment,like:like,mascota_id:"{{$feed->petId}}"},
+                    url: "{{route('profile.comment')}}",
+                    type: "POST",
+                    data: {post_id: postId, coment: coment, like: like, mascota_id: "{{$feed->petId}}"},
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                }).done(function(){
+                }).done(function () {
                     location.reload();
-                }).always(function(){
+                }).always(function () {
                     modal.hidePleaseWait();
                 })
 
 
             }
 
-            $(".btnLike").click(function(){
+            $(".btnLike").click(function () {
                 var postId = $(this).attr("postId");
-                comment(postId,$("#comment").val(),true);
+                comment(postId, $("#comment").val(), true);
             })
-            $(".btnDisLike").click(function(){
+            $(".btnDisLike").click(function () {
                 var postId = $(this).attr("postId");
-                comment(postId,$("#comment").val(),true);
+                comment(postId, $("#comment").val(), true);
             })
         });
     </script>
+@endsection
+
+@section("partial-styles")
+    <style type="text/css">
+        hr.endcomments {
+            border-top: 1px solid #8c8b8b;
+        }
+    </style>
 @endsection
 
 <div class="panel panel-info">
@@ -51,9 +58,9 @@
 
         </a>
         <a title="{{$feed->petName}}" href="{{route('mascota.show',['id'=>$feed->petId])}}">
-            <h3 class="text-info">{{$feed->petName}}
+            <h4 class="text-info">{{$feed->petName}}
                 <small>publico el {{$feed->timeStamp}}</small>
-            </h3>
+            </h4>
         </a>
 
 
@@ -74,52 +81,71 @@
                         <img class="img-responsive img-rounded" src="{{$feed->image}}">
                     @endif
                 @endif
-                <p class="text-muted">
+                <p class="text-muted lead">
                     {{$feed->content}}
                 </p>
             </div>
         </div>
 
     </div>
+
     <div class="panel-footer">
-        @foreach($feed->comments as $comment)
-            <div class="row">
-                <ul class="list-group">
-                    <li class="list-group item">
-                        <a href="{{route('profile.show',['id'=>$comment->profileId])}}"
-                           class="twPc-avatarLink">
-                            @if(empty($comment->profileImage))
-                                <img alt="{{$comment->profileName}}"
-                                     src="/img/no-avatar.png"
-                                     class="twPc-avatarImg">
-                            @else
-                                <img alt="{{$comment->profileName}}"
-                                     src="{{$comment->profileImage}}"
-                                     class="twPc-avatarImg">
-                            @endif
-
-                        </a>
-                        <a href="{{route('profile.show',['id'=>$comment->profileId])}}">
-                            <h3 class="text-info">{{$comment->profileName}}
-                                <small> publicado el {{$comment->timeStamp}}</small>
-                            </h3>
-                        </a>
-                        <p class="text-muted">
-                            <img src="/img/icons/{{$feed->icon}}">
-                            @if($comment->like)
-                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                            @else
-                                <span class="glyphicon glyphicon-thumbs-down"></span>
-                            @endif
-                            {{$comment->comment}}
-                        </p>
-                    </li>
-                </ul>
+        @if($feed->commentsCounter == 0)
+            <div class="text-muted text-center">
+                <h5>Este post no tiene comentarios</h5>
             </div>
-        @endforeach
-        <hr>
-        @if($feed->canComment)
+        @else
+            <div class="row">
+                <div class="col-md-offset-1 col-md-10">
+                    <div class="list-group">
+                        @foreach($feed->comments as $comment)
 
+                            <div class="list-group-item">
+
+                                    <a href="{{route('profile.show',['id'=>$comment->profileId])}}">
+                                        <h5 class="text-info">
+                                            @if(empty($comment->profileImage))
+                                                <img alt="{{$comment->profileName}}"
+                                                     src="/img/no-avatar.png"
+                                                     class="twPc-avatarImgComments">
+                                            @else
+                                                <img alt="{{$comment->profileName}}"
+                                                     src="{{$comment->profileImage}}"
+                                                     class="twPc-avatarImgComments">
+                                            @endif
+                                            {{$comment->profileName}}
+                                            <small> publicado el {{$comment->timeStamp}}</small>
+                                            @if(empty($comment->comment))
+                                                <img src="/img/icons/{{$feed->icon}}">
+                                                @if($comment->like)
+                                                    <span class="glyphicon glyphicon-thumbs-up"></span>
+                                                @else
+                                                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                                                @endif
+                                            @endif
+                                        </h5>
+                                    </a>
+
+                                @if(!empty($comment->comment))
+                                    <p class="text-muted">
+                                        {{$comment->comment}}
+                                        <img src="/img/icons/{{$feed->icon}}">
+                                        @if($comment->like)
+                                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                                        @else
+                                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                                        @endif
+                                    </p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if($feed->canComment)
+            <hr class="endcomments">
             <div class="row">
                 <input type="hidden" id="postId" value="{{$feed->id}}">
                 <div class="col-md-9">
@@ -130,7 +156,7 @@
                     <button type="button" class="btn btn-success btnLike" postId="{{$feed->id}}">
                         <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-up"></span>
                     </button>
-                    <button type="button" class="btn btn-danger btnDisLike"  postId="{{$feed->id}}">
+                    <button type="button" class="btn btn-danger btnDisLike" postId="{{$feed->id}}">
                         <img src="/img/icons/{{$feed->icon}}"> <span class="glyphicon glyphicon-thumbs-down"></span>
                     </button>
                 </div>

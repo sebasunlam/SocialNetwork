@@ -8,6 +8,7 @@ use App\Models\Media;
 use App\Models\Sexo;
 use App\Models\Tamanio;
 use App\Models\Tipo;
+use App\Models\Visita;
 use App\User;
 use Auth;
 use DB;
@@ -79,7 +80,20 @@ class MascotaController extends BaseController
             $propietario = false;
         }
 
-        $followers = $mascota->seguido()->count();
+        $followers = $mascota->seguido();
+
+        if(Auth::check()){
+            $userId = Auth::user()->id;
+            $perfil = User::find($userId)->perfil;
+            $siguiendo = !is_null($perfil->sigue()->find($mascota->id));
+
+            if(!$propietario){
+                Visita::create([
+                    "mascota_id" =>$mascota->id,
+                    "perfil_id"=>$perfil->id
+                ]);
+            }
+        }
 
         $posts = $mascota->post()->orderBy("created_at", "desc")->get();
         $feeds = array();
@@ -88,13 +102,13 @@ class MascotaController extends BaseController
             $feeds[] = $this->PostToFeed($post, $mascota);
         }
 
-
         return view("mascota.show")
             ->with('mascota', $this->MapToViewModel($mascota))
-            ->with('followers', $followers)
+            ->with('followers', $followers->count())
             ->with("feeds", $feeds)
             ->with('posts', $posts->count())
-            ->with('propietario',$propietario);
+            ->with('propietario',$propietario)
+            ->with('siguiendo',$siguiendo);
     }
 
     /**
@@ -187,6 +201,43 @@ class MascotaController extends BaseController
         }
 
 
+    }
+
+    public function multipleSearch($text){
+        $mascotas = Mascota::where('nombre','like','%'.$text.'%')->get();
+
+        $resultado=[];
+        foreach ($mascotas as $mascota){
+            $item = new stdClass();
+            $item->name = $mascota->nombre." (".$mascota->raza()->descripcion." - ".$mascota->raza->tipo()->descripcion;
+            $item->id = $mascota->id;
+            $resultado[] = $item;
+        }
+
+        return $resultado;
+    }
+
+    public function all(){
+        $mascotas = Mascota::All();
+
+        $resultado=[];
+        foreach ($mascotas as $mascota){
+            $item = new stdClass();
+            $item->name = $mascota->nombre." (Tipo: ".$mascota->raza->tipo->descripcion." - Raza: ".$mascota->raza->descripcion.")";
+
+            if(Auth::check()){
+                $userId = Auth::user()->id;
+                $currentuser = User::find($userId);
+                if($mascota->perfil->id == $currentuser->perfil->id){
+                    $item->name = $item->name." PROPIO";
+                }
+            }
+
+            $item->id = $mascota->id;
+            $resultado[] = $item;
+        }
+
+        return $resultado;
     }
 
 

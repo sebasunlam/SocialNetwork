@@ -17,182 +17,7 @@
 
 
     @yield('styles')
-    <style type="text/css">
-        .profile-usermenu {
-            margin-top: 30px;
-        }
-
-        .profile-usermenu ul li {
-            border-bottom: 1px solid #f0f4f7;
-        }
-
-        .profile-usermenu ul li:last-child {
-            border-bottom: none;
-        }
-
-        .profile-usermenu ul li a {
-            color: #93a3b5;
-            font-size: 14px;
-            font-weight: 400;
-        }
-
-        .profile-usermenu ul li a i {
-            margin-right: 8px;
-            font-size: 14px;
-        }
-
-        .profile-usermenu ul li a:hover {
-            background-color: #fafcfd;
-            color: #5b9bd1;
-        }
-
-        .profile-usermenu ul li.active {
-            border-bottom: none;
-        }
-
-        .profile-usermenu ul li.active a {
-            color: #5b9bd1;
-            background-color: #f6f9fb;
-            border-left: 2px solid #5b9bd1;
-            margin-left: -2px;
-        }
-
-        .table-image {
-            min-width: 40px;
-            min-height: 40px;
-            max-width: 40px;
-            max-height: 40px;
-        }
-
-        .twPc-div {
-            background: #fff none repeat scroll 0 0;
-            border: 1px solid #e1e8ed;
-            border-radius: 6px;
-            height: 200px;
-
-        }
-
-        .twPc-bg {
-            background-image: url("https://pbs.twimg.com/profile_banners/50988711/1384539792/600x200");
-            background-position: 0 50%;
-            background-size: 100% auto;
-            border-bottom: 1px solid #e1e8ed;
-            border-radius: 4px 4px 0 0;
-            height: 95px;
-            width: 100%;
-        }
-
-        .twPc-block {
-            display: block !important;
-        }
-
-        .twPc-button {
-            margin: -35px -10px 0;
-            text-align: right;
-            width: 100%;
-        }
-
-        .twPc-avatarLink {
-            background-color: #fff;
-            border-radius: 6px;
-            display: inline-block !important;
-            float: left;
-            margin: -30px 5px 0 8px;
-            max-width: 100%;
-            padding: 1px;
-            vertical-align: bottom;
-        }
-
-        .twPc-avatarImg {
-            border: 2px solid #fff;
-            border-radius: 7px;
-            box-sizing: border-box;
-            color: #fff;
-            height: 72px;
-            width: 72px;
-        }
-
-        .twPc-divUser {
-            margin: 5px 0 0;
-        }
-
-        .twPc-divName {
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 21px;
-        }
-
-        .twPc-divName a {
-            color: inherit !important;
-        }
-
-        .twPc-divStats {
-            margin-left: 11px;
-            padding: 10px 0;
-        }
-
-        .twPc-Arrange {
-            box-sizing: border-box;
-            display: table;
-            margin: 0;
-            min-width: 100%;
-            padding: 0;
-            table-layout: auto;
-        }
-
-        ul.twPc-Arrange {
-            list-style: outside none none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .twPc-ArrangeSizeFit {
-            display: table-cell;
-            padding: 0;
-            vertical-align: top;
-        }
-
-        .twPc-ArrangeSizeFit a:hover {
-            text-decoration: none;
-        }
-
-        .twPc-StatValue {
-            display: block;
-            font-size: 18px;
-            font-weight: 500;
-            transition: color 0.15s ease-in-out 0s;
-        }
-
-        .twPc-StatLabel {
-            color: #8899a6;
-            font-size: 10px;
-            letter-spacing: 0.02em;
-            overflow: hidden;
-            text-transform: uppercase;
-            transition: color 0.15s ease-in-out 0s;
-        }
-
-        .btn-file {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-file input[type=file] {
-            position: absolute;
-            top: 0;
-            right: 0;
-            min-width: 100%;
-            min-height: 100%;
-            font-size: 100px;
-            text-align: right;
-            filter: alpha(opacity=0);
-            opacity: 0;
-            outline: none;
-            background: white;
-            cursor: inherit;
-            display: block;
-        }
-    </style>
+    @yield('partial-styles')
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
@@ -202,9 +27,12 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-inverse navbar-static-top">
+    <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
+
+
+
 
                 <!-- Collapsed Hamburger -->
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -214,7 +42,6 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -224,9 +51,17 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
+
                     &nbsp;
                 </ul>
-
+                @if(Auth::check())
+                <div class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" data-provide="typeahead" placeholder="buscar..." autocomplete="off"
+                               class="form-control" id="mascotaTypeahead">
+                    </div>
+                </div>
+                @endif
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
@@ -271,12 +106,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
 
             <div class="container-fluid">
                 @yield('content')
             </div>
 
+        </div>
+        <div class="col-md-2">
+            @include("layouts.infobar")
         </div>
     @else
         @yield('content')
@@ -324,17 +162,69 @@
 </div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-{{--<script>--}}
-    {{--$(document).ready(function () {--}}
-        {{--$.ajaxSetup({--}}
-            {{--headers: {--}}
-                {{--'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-            {{--}--}}
-        {{--});--}}
-    {{--});</script>--}}
+<script>
+    $(document).ready(function () {
+
+        var $input = $("#mascotaTypeahead");
+
+
+//        $input.typeahead({
+//            templates:{
+//                empty: [
+//                    '<div class="empty-message">',
+//                    'No se encontraron resultados',
+//                    '</div>'
+//                ].join('\n')
+//            },
+//
+//            source: function () {
+//                $.get("mascota/multipleSearch/" + $input.val(), function (data) {
+//                    return data;
+//                }, 'json');
+//            }
+//        });
+
+//        $input.keyup(function(){
+//            $.get("mascota/multipleSearch/" + $input.val(), function (data) {
+//                console.log(data);
+//                $input.typeahead({
+//                    source: data,
+//                    autoSelect: true
+//                });
+//            }, 'json');
+//        });
+
+        $.get("{{route('mascota.all')}}" + $input.val(), function (data) {
+            console.log(data);
+            $input.typeahead({
+                templates: {
+                    empty: [
+                        '<div class="empty-message">',
+                        'No se encontraron resultados',
+                        '</div>'
+                    ].join('\n')
+                },
+                source: data,
+                autoSelect: false
+            });
+        }, 'json');
+
+
+        $input.change(function () {
+            var current = $input.typeahead("getActive");
+
+            if (current) {
+                // Some item from your model is active!
+                if (current.id != undefined)
+                    window.location = "{{route('mascota.show',['id'=>-1])}}".replace("-1", current.id);
+            }
+        });
+    });</script>
 <script src="/js/common.js"></script>
 @yield('scripts')
 @yield('partial-scripts')
+@yield('info-scripts')
+
 
 </body>
 </html>

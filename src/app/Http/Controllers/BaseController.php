@@ -55,7 +55,10 @@ class BaseController extends Controller
         $feed->content = $post->content;
         $comments = array();
 
-        $likes=$post->perfil_like_post()->orderBy("created_at", "desc")->get();
+        $likes=$post->perfil_like_post()->orderBy("created_at", "asc")->get();
+
+        $feed->commentsCounter = $likes->count();
+
         foreach ($likes as $like) {
             $comment = new \stdClass();
             $comment->comment = $like->coment;
@@ -78,6 +81,7 @@ class BaseController extends Controller
 
             $comments[] = $comment;
         }
+
         $feed->comments = $comments;
 
         $feed->icon = $mascota->raza->tipo->like_text;

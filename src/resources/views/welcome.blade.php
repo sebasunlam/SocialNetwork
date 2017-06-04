@@ -3,7 +3,7 @@
     <style type="text/css">
         .jumbotron {
             position: relative;
-            background: #FFFFFF url("/img/welcome.jpg") center center;
+            background: #FFFFFF url("/img/welcome_option.jpg") center center;
             margin-bottom: 0;
             min-height: 50%;
             height: 100vh;

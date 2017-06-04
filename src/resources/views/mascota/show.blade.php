@@ -26,9 +26,29 @@
                 })
             }
 
+            function unfollow(mascotaId) {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('profile.unfollow')}}",
+                    type: "POST",
+                    data: {mascota_id: mascotaId},
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            }
+
             $("#btnFollow").click(function () {
-                follow("{{$mascota->id}}")
+                follow("{{$mascota->id}}");
             });
+
+            $("#btnUnFollow").click(function(){
+                unfollow("{{$mascota->id}}");
+            })
 
             $(".radio").click(function () {
                 var value = $(this).find('input:radio').prop('value');
@@ -76,13 +96,19 @@
                 <!-- Twitter Button | you can get from: https://about.twitter.com/tr/resources/buttons#follow -->
 
                 @if(!$propietario)
+                    @if(!$siguiendo)
+                        <button type="button" class="btn btn-success" id="btnFollow"><i class="fa fa-forward"
+                                                                                        aria-hidden="true"></i> Seguir
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-success" id="btnUnFollow"><i class="fa fa-backward"
+                                                                                        aria-hidden="true"></i> Dejar de seguir
+                        </button>
+                    @endif
 
-                    <button type="button" class="btn btn-success" id="btnFollow"><i class="fa fa-forward"
-                                                                                    aria-hidden="true"
-                        ></i> Seguir
-                    </button>
                 @else
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal"><i
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
+                        <i
                                 class="fa fa-commenting-o" aria-hidden="true"></i> Postear
                     </button>
                 @endif

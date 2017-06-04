@@ -174,6 +174,24 @@ class ProfileController extends Controller
         return redirect(route('feed'));
     }
 
+    public function unfollow(Request $request)
+    {
+        $perfil = Auth::user()->perfil;
+        if ($perfil->sigue()->find($request["mascota_id"]) && is_null($perfil->mascota()->find($request["mascotaId"]))) {
+
+            $mascotaToUnFollow = Mascota::find($request["mascota_id"]);
+
+            if (!is_null($mascotaToUnFollow)) {
+
+                $perfil->sigue()->detach($mascotaToUnFollow);
+
+                return redirect(route('mascota.show', ["id" => $mascotaToUnFollow->id]));
+            }
+        }
+
+        return redirect(route('feed'));
+    }
+
     private function createUpdate(Request $request)
     {
 

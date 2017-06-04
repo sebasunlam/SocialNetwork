@@ -38,6 +38,7 @@ Route::patch('profile/update','ProfileController@update')->name('profile.update'
 Route::get('profile/show/{id}','ProfileController@show')->name('profile.show');
 Route::post('profile/comment','ProfileController@comment')->name('profile.comment')->middleware('auth');
 Route::post('profile/follow','ProfileController@follow')->name('profile.follow')->middleware('auth');
+Route::post('profile/unfollow','ProfileController@unfollow')->name('profile.unfollow')->middleware('auth');
 
 /*Feed*/
 Route::get('feed','FeedController@index')->name('feed')->middleware('auth');
@@ -52,4 +53,10 @@ Route::get('mascota/edit/{id}','MascotaController@edit')->name('mascota.edit')->
 Route::patch('mascota/update/{id}','MascotaController@update')->name('mascota.update')->middleware('auth');
 Route::get('mascota/show/{id}','MascotaController@show')->name('mascota.show');
 Route::post('mascota/post/{id}','MascotaController@post')->name('mascota.post');
+Route::get('mascota/multipleSearch/{text}','MascotaController@multipleSearch')->name('mascota.multipleSearch');
+Route::get('mascota/all','MascotaController@all')->name('mascota.all');
 
+
+/*Ranking*/
+Route::get('ranking/{tipo}','RankingController@rannkingMascotaTipo')->name('ranking.tipo')->middleware('auth');
+Route::get('ranking','RankingController@rannkingMascota')->name('ranking.todos')->middleware('auth');
