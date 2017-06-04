@@ -98,4 +98,17 @@ class BaseController extends Controller
 
 
     }
+
+
+    public function getCurrentProfile(){
+        if(Auth::check()){
+            return Auth::user()->perfil;
+        }
+
+        return null;
+    }
+
+    public function getMascotaPerfil($perfil,$id){
+        return $perfil->mascota()->find($id);
+    }
 }

@@ -60,3 +60,14 @@ Route::get('mascota/all','MascotaController@all')->name('mascota.all');
 /*Ranking*/
 Route::get('ranking/{tipo}','RankingController@rannkingMascotaTipo')->name('ranking.tipo')->middleware('auth');
 Route::get('ranking','RankingController@rannkingMascota')->name('ranking.todos')->middleware('auth');
+
+/*Citas*/
+
+Route::post("citas/buscando/{id}","CitasController@buscandoCita")->name("citas.buscando")->middleware("auth");
+Route::post("citas/dejardebuscar/{id}","CitasController@dejarDeBuscar")->name("citas.dejardebuscar")->middleware("auth");
+Route::post("citas/solicitar","CitasController@pedirCita")->name("citas.solicitar")->middleware("auth");
+Route::get("citas/buscar","CitasController@busqueda")->name("citas.solicitar")->middleware("auth");
+Route::get("citas/notificar","CitasController@notificacionCitas")->name("citas.notificaciones")->middleware("auth");
+Route::get("citas/lista","CitasController@listadoCitas")->name("citas.lista")->middleware("auth");
+Route::post("citas/acepta","CitasController@aceptarCita")->name("citas.acepta")->middleware("auth");
+

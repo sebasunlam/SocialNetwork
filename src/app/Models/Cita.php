@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Cita extends Model
 {
-    protected $table = 'citas';
+    protected $table = 'cita';
 
     protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = [
-        'acepta'
+        'acepta',
+        'buscando',
+        'ofrecida'
     ];
 
     protected $guarded = [];
