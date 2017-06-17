@@ -38,6 +38,10 @@
             color: #FFFFFF;
         }
 
+        p {
+            color: #FFFFFF;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -53,23 +57,14 @@
                         <div class="panel-body">
                             @include('auth.registerpartial')
                             <div class="row">
-                                <p class="lead">
+                                <p class="col-md-offset-1 lead">
                                     Tambien podes usar tu red social favorita
                                 </p>
                             </div>
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <a href="{{route('redirectProvider',['provider'=>'facebook'])}}"
-                                           class="btn btn-primary"><i class="fa fa-facebook"></i> |
-                                            Facebook
-                                        </a>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a href="{{route('redirectProvider',['provider'=>'google'])}}"
-                                           class="btn btn-danger"><i class="fa fa-google"></i> |
-                                            Google
-                                        </a>
+                                    <div class="col-md-12">
+                                        @include('shared.socialbuttons')
                                     </div>
                                 </div>
                             </div>
