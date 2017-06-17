@@ -6,3 +6,7 @@
    class="btn btn-danger"><i class="fa fa-google"></i> |
     Google
 </a>
+<a href="{{route('redirectProvider',['provider'=>'twitter'])}}"
+       class="btn btn-info"><i class="fa fa-twitter"></i> |
+    Twitter
+</a>

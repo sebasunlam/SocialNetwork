@@ -18,6 +18,10 @@
 
     @yield('styles')
     @yield('partial-styles')
+    <style>
+        .black-background {background-color:#000000;}
+        .white {color:#ffffff;}
+    </style>
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([

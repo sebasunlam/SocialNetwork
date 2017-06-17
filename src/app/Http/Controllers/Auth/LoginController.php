@@ -46,8 +46,12 @@ class LoginController extends Controller
 
         if(!config("services.$provider")) abort('404'); //just to handle providers that doesn't exist
 
+if($provider != 'twitter'){
+    return Socialite::driver($provider)->setScopes(['email'])->redirect();
+}else{
+    return Socialite::driver($provider)->redirect();
+}
 
-        return Socialite::driver($provider)->setScopes(['email'])->redirect();
 //        return Socialite::driver($provider)->redirect();
     }
 
@@ -55,6 +59,12 @@ class LoginController extends Controller
     public function handleCallback($provider=null)
     {
         $user = Socialite::driver($provider)->user();
+
+        if($user->getEmail() != ''){
+            $user = Socialite::driver('github')->userFromToken($user->token);
+        }
+
+
 
         $localUser = User::where('email','=',$user->getEmail())->first();
 
