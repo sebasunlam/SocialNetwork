@@ -34,5 +34,25 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENTID'),
+        'client_secret' => env('FACEBOOK_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT'),
+    ],
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENTID'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT'),
+    ]
+//    'facebook' => [
+//        'client_id' => '1732707486745661',
+//        'client_secret' => '435ab379da3c40ad74007103ce40e340',
+//        'redirect' => 'http://localhost:8000/login/facebook/callback',
+//    ],
+//    'google' => [
+//        'client_id' => '520722018815-glm8n3ep3j9t33hm8b6nhb935bpg3tv1.apps.googleusercontent.com',
+//        'client_secret' => 'yhP2FLwzcJaolviIQ0sj7CJJ',
+//        'redirect' => 'http://localhost:8000/login/google/callback',
+//    ]
 
 ];

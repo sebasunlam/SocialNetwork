@@ -31,10 +31,11 @@
         }
 
         .panel-body {
-            background:#556175;}
+            background: #556175;
+        }
 
-        label{
-            color:#FFFFFF;
+        label {
+            color: #FFFFFF;
         }
 
     </style>
@@ -46,16 +47,38 @@
             <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Bienvenido a <strong>{{ config('app.name', 'Laravel') }}</strong> <small> registrate para continuar</small></div>
+                        <div class="panel-heading">Bienvenido a <strong>{{ config('app.name', 'Laravel') }}</strong>
+                            <small> registrate para continuar</small>
+                        </div>
                         <div class="panel-body">
                             @include('auth.registerpartial')
+                            <div class="row">
+                                <p class="lead">
+                                    Tambien podes usar tu red social favorita
+                                </p>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <a href="{{route('redirectProvider',['provider'=>'facebook'])}}"
+                                           class="btn btn-primary"><i class="fa fa-facebook"></i> |
+                                            Facebook
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{{route('redirectProvider',['provider'=>'google'])}}"
+                                           class="btn btn-danger"><i class="fa fa-google"></i> |
+                                            Google
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
-
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
 @endsection
 

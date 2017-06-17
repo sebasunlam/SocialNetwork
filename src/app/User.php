@@ -18,13 +18,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'email',
-        'password',
-        'facebookId',
-        'facebookToken',
-        'facebookRefreshToken',
-        'googleId',
-        'googleToken',
-        'googleRefreshToken'
+        'password'
     ];
 
     public function perfil()

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
+use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
@@ -35,5 +38,40 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+
+    public function redirectProvider($provider=null)
+    {
+
+        if(!config("services.$provider")) abort('404'); //just to handle providers that doesn't exist
+
+
+        return Socialite::driver($provider)->setScopes(['email'])->redirect();
+//        return Socialite::driver($provider)->redirect();
+    }
+
+
+    public function handleCallback($provider=null)
+    {
+        $user = Socialite::driver($provider)->user();
+
+        $localUser = User::where('email','=',$user->getEmail())->first();
+
+        if(is_null($localUser)){
+          $localUser = User::create([
+                'email' => $user->getEmail(),
+                'password' => bcrypt(''),
+            ]);
+        }
+
+        Auth::login($localUser,true);
+
+
+        if(is_null($localUser->perfil)){
+            return redirect(route('profile'));
+        }else{
+            return redirect(route('feed'));
+        }
     }
 }

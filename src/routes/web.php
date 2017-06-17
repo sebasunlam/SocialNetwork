@@ -21,6 +21,8 @@ use App\Models\{
 
 Route::get('/','HomeController@index');
 Auth::routes();
+Route::get("login/{provider}",'Auth\LoginController@redirectProvider')->name('redirectProvider');
+Route::get("login/{provider}/callback",'Auth\LoginController@handleCallback')->name('handleCallback');
 
 /*Parametricos*/
 Route::get('sexo/all','SexoController@all')->name('sexo.all')->middleware('auth');
