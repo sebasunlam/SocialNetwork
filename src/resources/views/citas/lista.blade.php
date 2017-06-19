@@ -1,13 +1,15 @@
+@extends('layouts.app')
+
 @section("scripts")
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#btnAceptarCita").click(function () {
-                var id = $("#btnAceptarCita").attr("cita");
+            $(".btnAceptarCita").click(function () {
+                var id = $(this).attr("cita");
                 aceptaRechaza(id, true)
             });
 
-            $("#btnrechazarcita").click(function () {
-                var id = $("#btnAceptarCita").attr("cita");
+            $(".btnRechazarCita").click(function () {
+                var id = $(this).attr("cita");
                 aceptaRechaza(id, false)
             });
 
@@ -31,47 +33,54 @@
     </script>
 @endsection
 @section('content')
-    <div class="container">
-        <h1>Citas ofrecidas</h1>
-        <table class="table">
-            <th>
-            <td></td>
-            <td>Mi mascota</td>
-            <td>Mascota solicitante</td>
-            <td>Raza</td>
-            <td>Tipo</td>
-            <td></td>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1>Citas ofrecidas</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <th>
+                <td></td>
+                <td>Mi mascota</td>
+                <td>Mascota solicitante</td>
+                <td>Raza</td>
+                <td>Tipo</td>
+                <td></td>
 
-            </th>
-            @foreach($citas as $cita)
-                <tr>
-                    <td>
-                        @if(empty($cita->imagenOfrecido))
-                            <img alt="{{$cita->nombreOfrecido}}"
-                                 src="/img/no-avatar.png"
-                                 class="twPc-avatarImg">
-                        @else
-                            <img alt="{{$cita->nombreOfrecido}}"
-                                 src="{{$cita->imagenOfrecido}}"
-                                 class="twPc-avatarImg">
-                        @endif
-                    </td>
-                    <td>{{$cita->nombreOfrecido}}</td>
-                    <td>{{$cita->nombreBuscando}}</td>
-                    <td>{{$cita->raza}}</td>
-                    <td>{{$cita->tipo}}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button" id="btnAceptarCita" class="btn btn-success" cita="{{$cita->id}}">
-                                Aceptar
-                            </button>
-                            <button type="button" id="btnRechazarCita" class="btn btn-danger" cita="{{$cita->id}}">
-                                Rechazar
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
+                </th>
+                @foreach($citas as $cita)
+                    <tr>
+                        <td>
+                            @if(empty($cita->imagenOfrecido))
+                                <img alt="{{$cita->nombreOfrecido}}"
+                                     src="/img/no-avatar.png"
+                                     class="twPc-avatarImg">
+                            @else
+                                <img alt="{{$cita->nombreOfrecido}}"
+                                     src="{{$cita->imagenOfrecido}}"
+                                     class="twPc-avatarImg">
+                            @endif
+                        </td>
+                        <td>{{$cita->nombreOfrecido}}</td>
+                        <td>{{$cita->nombreBuscando}}</td>
+                        <td>{{$cita->raza}}</td>
+                        <td>{{$cita->tipo}}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btnAceptarCita" cita="{{$cita->id}}">
+                                    Aceptar <i class="fa fa-thumbs-o-up"></i>
+                                </button>
+                                <button type="button"  class="btn btn-danger btnRechazarCita" cita="{{$cita->id}}">
+                                    Rechazar <i class="fa fa-thumbs-o-down"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
     </div>
+
+
+
 @endsection

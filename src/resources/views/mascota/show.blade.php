@@ -42,11 +42,51 @@
                 })
             }
 
+            function buscarPaerja() {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('citas.buscando',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            }
+
+            function dejarDeBuscar() {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('citas.dejardebuscar',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            }
+
+            @if($mascota->buscandoPareja)
+            $("#btnTooglePareja").click(function () {
+                dejarDeBuscar();
+            });
+            @else
+            $("#btnTooglePareja").click(function () {
+                buscarPaerja();
+            });
+            @endif
+
             $("#btnFollow").click(function () {
                 follow("{{$mascota->id}}");
             });
 
-            $("#btnUnFollow").click(function(){
+            $("#btnUnFollow").click(function () {
                 unfollow("{{$mascota->id}}");
             })
 
@@ -102,11 +142,22 @@
                         </button>
                     @else
                         <button type="button" class="btn btn-success" id="btnUnFollow"><i class="fa fa-backward"
-                                                                                        aria-hidden="true"></i> Dejar de seguir
+                                                                                          aria-hidden="true"></i> Dejar
+                            de seguir
                         </button>
                     @endif
 
                 @else
+
+
+                    <button class="btn btn-danger" type="button" id="btnTooglePareja">
+                        @if($mascota->buscandoPareja)
+                            Dejar de buscar <i class="fa fa-heart-o" aria-hidden="true"></i>
+                        @else
+                            Buscar pareja <i class="fa fa-heart" aria-hidden="true"></i>
+                        @endif
+                    </button>
+
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
                         <i
                                 class="fa fa-commenting-o" aria-hidden="true"></i> Postear

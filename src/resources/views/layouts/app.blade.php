@@ -19,8 +19,13 @@
     @yield('styles')
     @yield('partial-styles')
     <style>
-        .black-background {background-color:#000000;}
-        .white {color:#ffffff;}
+        .black-background {
+            background-color: #000000;
+        }
+
+        .white {
+            color: #ffffff;
+        }
     </style>
     <!-- Scripts -->
     <script>
@@ -34,8 +39,6 @@
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
-
-
 
 
                 <!-- Collapsed Hamburger -->
@@ -59,25 +62,33 @@
                     &nbsp;
                 </ul>
                 @if(Auth::check())
-                <div class="navbar-form navbar-left">
-                    <div class="form-group">
-                        <input type="text" data-provide="typeahead" placeholder="buscar..." autocomplete="off"
-                               class="form-control" id="mascotaTypeahead">
+                    <div class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" data-provide="typeahead" placeholder="buscar..." autocomplete="off"
+                                   class="form-control" id="mascotaTypeahead">
+                        </div>
                     </div>
-                </div>
-                @endif
-                <!-- Right Side Of Navbar -->
+            @endif
+            <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
                         <li><a href="{{ route('register') }}">Registrarse</a></li>
                     @else
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                                aria-expanded="false" id="linkCitas">Citas <span
+                                        class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{route("citas.lista")}}">Ver citas</a></li>
+                                <li><a href="{{route("citas.buscar")}}">Buscar citas</a></li>
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">
                                 {{ empty(Auth::user()->perfil) ? Auth::user()->email :Auth::user()->perfil->nombre .' '. Auth::user()->perfil->apellido}}
-                                <span class="caret"></span>
+
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
@@ -172,32 +183,6 @@
         var $input = $("#mascotaTypeahead");
 
 
-//        $input.typeahead({
-//            templates:{
-//                empty: [
-//                    '<div class="empty-message">',
-//                    'No se encontraron resultados',
-//                    '</div>'
-//                ].join('\n')
-//            },
-//
-//            source: function () {
-//                $.get("mascota/multipleSearch/" + $input.val(), function (data) {
-//                    return data;
-//                }, 'json');
-//            }
-//        });
-
-//        $input.keyup(function(){
-//            $.get("mascota/multipleSearch/" + $input.val(), function (data) {
-//                console.log(data);
-//                $input.typeahead({
-//                    source: data,
-//                    autoSelect: true
-//                });
-//            }, 'json');
-//        });
-
         $.get("{{route('mascota.all')}}" + $input.val(), function (data) {
             console.log(data);
             $input.typeahead({
@@ -223,6 +208,18 @@
                     window.location = "{{route('mascota.show',['id'=>-1])}}".replace("-1", current.id);
             }
         });
+
+        @if(!Auth::guest())
+
+            $.get("{{route("citas.tiene")}}", function (data) {
+            if (data === "true") {
+                $("#linkCitas").html('Citas <i class="fa fa-bell" aria-hidden="true"></i> <span class="caret"></span>');
+            } else {
+                $("#linkCitas").html('Citas <span class="caret"></span>');
+            }
+        })
+
+        @endif
     });</script>
 <script src="/js/common.js"></script>
 @yield('scripts')

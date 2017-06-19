@@ -17,5 +17,4 @@ class RazaController extends Controller
     {
         return Raza::where('tipo_id',$tipo_id)->get();
     }
-
 }

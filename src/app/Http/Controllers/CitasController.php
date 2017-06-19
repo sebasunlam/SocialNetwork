@@ -3,13 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cita;
+use App\Models\Domicilio;
 use App\Models\Mascota;
+use App\Models\Perfil;
+use App\Models\Tamanio;
 use Illuminate\Http\Request;
 use stdClass;
+use Storage;
 
 class CitasController extends BaseController
 {
     //
+    public function hasCita()
+    {
+        $mascotas = $this->getMascotasFromLogedUser();
+        $tiene = "false";
+        foreach ($mascotas as $mascota) {
+
+            if (Cita::where("buscando", "=", $mascota->id)->whereNull("acepta")->count() > 0)
+                $tiene = "true";
+        }
+
+        return $tiene;
+    }
 
     public function buscandoCita($id)
     {
@@ -24,7 +40,8 @@ class CitasController extends BaseController
     public function pedirCita(Request $request)
     {
         $perfil = $this->getCurrentProfile();
-        $mascotaPidiendo = $this->getMascotaPerfil($perfil, $request['mascota_pidiendo_id']);
+        $mascotaPidiendo = $this->getMascotaPerfil($perfil, $request["mascota_pidiendo_id"]);
+
         $mascotaBuscando = Mascota::find($request["mascota_buscando_id"]);
         $errors = [];
 
@@ -36,49 +53,65 @@ class CitasController extends BaseController
             $errors[] = "La mascota no que busca la cita no existe";
         }
 
-        if (!is_null($mascotaBuscando) && !$mascotaBuscando->cita) {
-            $errors[] = "La mascota no que busca citas";
-        }
 
-        if ($mascotaPidiendo->citaOfrecida()->where("buscando", "=", $mascotaBuscando->id)) {
-            $errors[] = "Usted ya realizo una solicitud a esta mascota";
+        if (!is_null($mascotaBuscando) && !$mascotaBuscando->cita) {
+            $errors[] = "La mascota no busca citas";
         }
 
         if ($mascotaPidiendo->sexo_id == $mascotaBuscando->sexo_id) {
             $errors[] = "Ambas mascotas tienen el mismo sexo";
         }
 
-        if (isEmpty($errors)) {
+        if (empty($errors)) {
             Cita::create([
                 "buscando" => $mascotaBuscando->id,
                 "ofrecida" => $mascotaPidiendo->id
             ]);
-            return vie("citas.busqueda")
-                ->with("mascotas", $this->filterMascotas($request, $mascotaPidiendo))
-                ->with("mascotaPidiendo", $mascotaPidiendo)
-                ->with("mascotaBuscando", $mascotaBuscando);
         } else {
-            return vie("citas.busqueda")->with("errors", $errors);
+            return $errors;
         }
     }
 
 
+    public function getBusquedaView()
+    {
+        $mascotas = $this->getMascotasFromLogedUser();
+
+        return view("citas.busqueda")
+            ->with("misMascotas", $mascotas)
+            ->with("tamanios", Tamanio::all());
+    }
 
     public function busqueda(Request $request)
     {
-        if($request["mascota_pidiendo_id"])
-        $mascotaPidiendo = Mascota::find($request["mascota_pidiendo_id"]);
+        if ($request["mascota_pidiendo_id"])
+            $mascotaPidiendo = Mascota::find($request["mascota_pidiendo_id"]);
 
+        $errors = array();
         if (is_null($mascotaPidiendo)) {
             $errors[] = "Debe especificar una mascota para ofrecer";
         }
 
-        if (!isEmpty($errors)) {
+        $mascotas = $this->getMascotasFromLogedUser();
 
-            return vie("citas.busqueda")->with("mascotas", $this->filterMascotas($request, $mascotaPidiendo));
+        $model = new stdClass();
+        $model->mascota_pidiendo_id = $request["mascota_pidiendo_id"];
+        $model->raza_id = $request["raza_id"];
+        $model->tamanio_id = $request["tamanio_id"];
+        if (empty($errors)) {
+
+            return view("citas.busqueda")
+                ->with("mascotasCitas", $this->filterMascotas($request, $mascotaPidiendo))
+                ->with("misMascotas", $mascotas)
+                ->with("tamanios", Tamanio::all())
+                ->with("model", $model);
 
         } else {
-            return vie("citas.busqueda")->with("errors", $errors);
+            return view("citas.busqueda")
+                ->with("multipleErrors", $errors)
+                ->with("misMascotas", $mascotas)
+                ->with("tamanios", Tamanio::all())
+                ->with("model", $model);
         }
     }
 
@@ -94,14 +127,16 @@ class CitasController extends BaseController
     }
 
 
-
-    public function aceptarCita(Request $request){
+    public function aceptarCita(Request $request)
+    {
         $cita = Cita::find($request["id"]);
         $perfil = $this->getCurrentProfile();
 
-        foreach ($perfil->mascota() as $mascota){
-            if($cita->buscando->id == $mascota->id){
-                $cita->update(["acepta"=>$request["acepta"]]);
+        foreach ($perfil->mascota as $mascota) {
+
+            if ($cita->buscando == $mascota->id) {
+
+                $cita->update(["acepta" => $request["acepta"] ? 1 : 0]);
             }
         }
 
@@ -111,20 +146,26 @@ class CitasController extends BaseController
     private function getCitasVieModel()
     {
         $perfil = $this->getCurrentProfile();
-        $mascotasCita = $perfil->mascota()->where("cita", "=", true);
+        $mascotasCita = $perfil->mascota()->where("cita", "=", true)->get();
 
         $citas = [];
         foreach ($mascotasCita as $mascota) {
-            $ofrecimientos = $mascota->citaBuscando()->where("acepta", "=", null);
-            foreach ($ofrecimientos as $ofrecimiento) {
-                $cita = new stdClass();
-                $cita->nombreOfrecido = $ofrecimiento->ofrecida->nombre;
-                $cita->nombreBuscando = $mascota->nombre;
-                $cita->raza = $ofrecimiento->raza->descripcion;
-                $cita->tipo = $ofrecimiento->raza->tipo->descripcion;
-                $cita->id = $ofrecimientos->id;
 
-                $imagen = $ofrecimiento->ofrecida->imagen()->latest()->first();
+            $ofrecimientos = $mascota->citaBuscando()->where("acepta", "=", null)->get();
+
+
+            foreach ($ofrecimientos as $ofrecimiento) {
+
+                $cita = new stdClass();
+                $ofrecido = Mascota::find($ofrecimiento->ofrecida);
+                $cita->nombreOfrecido = $ofrecido->nombre;
+
+                $cita->nombreBuscando = $mascota->nombre;
+                $cita->raza = $ofrecido->raza->descripcion;
+                $cita->tipo = $ofrecido->raza->tipo->descripcion;
+                $cita->id = $ofrecimiento->id;
+
+                $imagen = $ofrecido->imagen()->latest()->first();
 
 
                 $file = null;
@@ -148,34 +189,54 @@ class CitasController extends BaseController
 
         $mascotas = Mascota::where("cita", "=", true);
 
-        if (!isEmpty($request["raza_id"])) {
-            $mascotas = $mascotas->where("raza_id", "=", $request["raza_id"]);
+
+        //$mascotas = $mascotas->where("raza.tipo_id", "=", $mascotaPidiendo->raza->tipo->id);
+
+        if (!empty($request["raza_id"])) {
+
+            $mascotas = $mascotas->where("mascota.raza_id", "=", $request["raza_id"]);
         }
 
-        if (!isEmpty($request["tipo_id"])) {
-            $mascotas = $mascotas->join("raza")->where("tipo_id", "=", $request["tipo_id"]);
+        if (!empty($request["tamanio_id"])) {
+
+            $mascotas = $mascotas->where("mascota.tamanio_id", "=", $request["tamanio_id"]);
         }
 
-        if (!isEmpty($request["tamanio_id"])) {
-            $mascotas = $mascotas->where("tamanio_id", "=", $request["tamanio_id"]);
-        }
 
-        $mascotas = $mascotas->where("sexo_id", "!=", $mascotaPidiendo->sexo_id);
-        $mascotas = $mascotas->join("cita")->where("cita.ofrecida", "!=", $mascotaPidiendo->id);
+        $mascotas = $mascotas->where("mascota.sexo_id", "!=", $mascotaPidiendo->sexo_id);
+
+        //$mascotas = $mascotas->join("cita","cita.buscando","=","mascota.id")->where("cita.ofrecida", "!=", $mascotaPidiendo->id);
 
         $mascotasViewModel = [];
 
-        foreach ($mascotas as $mascota) {
+        foreach ($mascotas->get() as $mascota) {
             $mascotaViewModel = new stdClass();
             $mascotaViewModel->nombre = $mascota->nombre;
             $mascotaViewModel->raza = $mascota->raza->descripcion;
             $mascotaViewModel->tipo = $mascota->raza->tipo->descripcion;
-            $mascotaViewModel->provincia = $mascota->perfil->domicilios->first()->localidad->departamento->provincia->descripcion;
-            $mascotaViewModel->departamento = $mascota->perfil->domicilios->first()->localidad->departamento->descripcion;
-            $mascotaViewModel->localidad = $mascota->perfil->domicilios->first()->localidad->descripcion;
-            $mascotaViewModel->latlong = $mascota->perfil->domicilios->first()->lat . "," . $mascota->perfil->domicilios->first()->long;
+            $mascotaViewModel->id = $mascota->id;
 
-            $mascotasViewModel[] = $mascotaViewModel;
+            $domicilio = Domicilio::where("perfil_id", "=", $mascota->perfil->id)->first();
+
+            $mascotaViewModel->provincia = $domicilio->localidad->departamento->provincia->descripcion;
+            $mascotaViewModel->departamento = $domicilio->localidad->departamento->descripcion;
+            $mascotaViewModel->localidad = $domicilio->localidad->descripcion;
+            $mascotaViewModel->latlong = $domicilio->lat . "," . $domicilio->long;
+
+            $mascotaViewModel->existeCita = Cita::where("ofrecida", "=", $mascotaPidiendo->id)->where("buscando", "=", $mascota->id)->whereNull("acepta")->count() > 0;
+
+            $imagen = $mascota->imagen()->latest()->first();
+            $file = null;
+            $extension = null;
+
+            if (!empty($imagen) && Storage::disk('local')->exists($imagen->url)) {
+                $file = Storage::get($imagen->url);
+                $extension = $imagen->extension;
+            }
+            $mascotaViewModel->imagen = !empty($imagen) && !empty($file) && !empty($extension) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
+
+            if ($mascotaPidiendo->raza->tipo->id == $mascota->raza->tipo->id)
+                $mascotasViewModel[] = $mascotaViewModel;
         }
         return $mascotasViewModel;
     }
@@ -187,11 +248,11 @@ class CitasController extends BaseController
         if (!is_null($mascota)) {
             $mascota->update(["cita" => $toogle]);
 
-            return vie("citas.index")->with("mascota", $mascota);
+//            return vie("citas.index")->with("mascota", $mascota);
         } else {
             $errors = [];
             $errors[] = "La mascota no es de su pertenencia";
-            return vie("shared.index")->with("errors", $errors);
+//            return vie("shared.index")->with("errors", $errors);
         }
     }
 

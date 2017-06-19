@@ -6,6 +6,7 @@ use App\Models\Media;
 use App\Models\PerfilLikePost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 use Storage;
 
 class BaseController extends Controller
@@ -110,5 +111,70 @@ class BaseController extends Controller
 
     public function getMascotaPerfil($perfil,$id){
         return $perfil->mascota()->find($id);
+    }
+
+
+    public function getMascotasFromLogedUser()
+    {
+        $mascotas = Auth::user()->perfil->mascota;
+
+        $listMascotaViewModel = array();
+        foreach ($mascotas as $mascota) {
+           // dd($mascota);
+            $listMascotaViewModel[] = $this->MapToMascotaViewModel($mascota);
+        }
+        return $listMascotaViewModel;
+    }
+
+    public
+    function MapToMascotaViewModel($mascota)
+    {
+        $mascotaViewModel = new stdClass();
+        $mascotaViewModel->id = $mascota->id;
+        $mascotaViewModel->nombre = $mascota->nombre;
+        $mascotaViewModel->dia_nacimiento = $mascota->dia;
+        $mascotaViewModel->mes_nacimiento = $mascota->mes;
+        $mascotaViewModel->anio_nacimiento = $mascota->anio;
+        $mascotaViewModel->sexo_id = $mascota->sexo->id;
+        $mascotaViewModel->tamanio_id = $mascota->tamanio->id;
+        $mascotaViewModel->raza_id = $mascota->raza->id;
+        $mascotaViewModel->tipo_id = $mascota->raza->tipo->id;
+        $mascotaViewModel->adopcion = $mascota->adopcion;
+        $mascotaViewModel->pareja = $mascota->cita;
+        $mascotaViewModel->perdido = $mascota->perdido;
+        $mascotaViewModel->like_text = $mascota->raza->tipo->like_text;
+
+        /* parametricos detalle*/
+        $mascotaViewModel->sexo = $mascota->sexo->descripcion;
+        $mascotaViewModel->tipo = $mascota->raza->tipo->descripcion;
+        $mascotaViewModel->raza = $mascota->raza->descripcion;
+        $mascotaViewModel->tamanio = $mascota->tamanio->descripcion;
+        $mascotaViewModel->en_adopcion = $mascota->adopcion ? "SI" : "NO";
+        $mascotaViewModel->en_pareja = $mascota->cita ? "SI" : "NO";
+        $mascotaViewModel->esta_perdido = $mascota->perdido ? "SI" : "NO";
+        $mascotaViewModel->buscandoPareja = $mascota->cita;
+
+        $imagen = $mascota->imagen()->latest()->first();
+
+
+        $file = null;
+        $extension = null;
+
+        if (!empty($imagen) && Storage::disk('local')->exists($imagen->url)) {
+            $file = Storage::get($imagen->url);
+            $extension = $imagen->extension;
+        }
+        $mascotaViewModel->imagen = !empty($imagen) && !empty($file) && !empty($extension) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
+
+        if (empty($mascota->dia) && empty($mascota->mes)) {
+            $mascotaViewModel->nacimiento = $mascota->anio;
+        } elseif (empty($mascota->dia)) {
+            $mascotaViewModel->nacimiento = $mascota->mes . "/" . $mascota->anio;
+        } else {
+            $mascotaViewModel->nacimiento = $mascota->dia . "/" . $mascota->mes . "/" . $mascota->anio;
+        }
+
+        return $mascotaViewModel;
+
     }
 }

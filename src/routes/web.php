@@ -57,6 +57,7 @@ Route::get('mascota/show/{id}','MascotaController@show')->name('mascota.show');
 Route::post('mascota/post/{id}','MascotaController@post')->name('mascota.post');
 Route::get('mascota/multipleSearch/{text}','MascotaController@multipleSearch')->name('mascota.multipleSearch');
 Route::get('mascota/all','MascotaController@all')->name('mascota.all');
+Route::get('mascota/{mascotaId}/tipo','MascotaController@getTipoId')->name('mascota.tipo');
 
 
 /*Ranking*/
@@ -68,8 +69,10 @@ Route::get('ranking','RankingController@rannkingMascota')->name('ranking.todos')
 Route::post("citas/buscando/{id}","CitasController@buscandoCita")->name("citas.buscando")->middleware("auth");
 Route::post("citas/dejardebuscar/{id}","CitasController@dejarDeBuscar")->name("citas.dejardebuscar")->middleware("auth");
 Route::post("citas/solicitar","CitasController@pedirCita")->name("citas.solicitar")->middleware("auth");
-Route::get("citas/buscar","CitasController@busqueda")->name("citas.solicitar")->middleware("auth");
+Route::get("citas/buscar","CitasController@getBusquedaView")->name("citas.buscar")->middleware("auth");
+Route::post("citas/find","CitasController@busqueda")->name("citas.find")->middleware("auth");
 Route::get("citas/notificar","CitasController@notificacionCitas")->name("citas.notificaciones")->middleware("auth");
+Route::get("citas/tiene","CitasController@hasCita")->name("citas.tiene")->middleware("auth");
 Route::get("citas/lista","CitasController@listadoCitas")->name("citas.lista")->middleware("auth");
 Route::post("citas/acepta","CitasController@aceptarCita")->name("citas.acepta")->middleware("auth");
 

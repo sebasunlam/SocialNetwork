@@ -5,7 +5,7 @@
             $("#listaRanking").hide();
             $("#rankingLoading").show();
 
-                    @if(!empty($mascota))
+                    @if(!empty($mascota) && !empty($mascota->tipo_id))
             var url = "{{route("ranking.tipo",["tipo" => $mascota->tipo_id])}}";
                     @else
             var url = "{{route("ranking.todos")}}";
