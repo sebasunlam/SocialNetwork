@@ -37,7 +37,7 @@
 
 
             function getRazas(tipoId) {
-                return $.get("/raza/" + tipoId + "/tipo").done(function (data) {
+                return $.get("{{route("raza.byTipo",["tipo_id"=>-1])}}".replace("-1",tipoId)).done(function (data) {
                     var razas = '<option>Seleccione una raza...</option>';
                     for (i = 0; i < data.length; i++) {
                         razas = razas + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';

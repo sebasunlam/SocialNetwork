@@ -3,7 +3,7 @@
         @if(!empty($profile->image))
             <img id="img" src="{{$profile->image}}" alt="" class="img-thumbnail img-responsive">
         @else
-            <img id="img" src="/img/no-avatar.png" alt="Suba una imagen" class="img-thumbnail profile">
+            <img id="img" src="/img/no-avatar.png" alt="Suba una imagen" class="img-thumbnail img-responsive">
         @endif
     </div>
 </div>

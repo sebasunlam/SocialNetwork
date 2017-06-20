@@ -281,9 +281,11 @@ class ProfileController extends BaseController
             throw $e;
         }
 
-        $path = $request->photo->store('profiles');
+
 
         if ($request->hasFile('photo') && $request->photo->isValid()) {
+
+            $path = $request->photo->store('profiles');
             $imagen = new Imagen([
                 'url' => $path,
                 'extension' => $request->photo->extension()

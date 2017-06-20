@@ -86,7 +86,7 @@ Route::get("perdido/encontrados","PerdidoController@getEncontrados")->name("perd
 Route::post("perdido/encontrado","PerdidoController@encontrado")->name("perdido.encontrado");
 Route::get("perdido/all","PerdidoController@getPerdidos")->name("perdido.all");
 
-/**/
+/*Adopcion*/
 Route::post("adopcion/poner/{id}","AdopcionController@ponerAdpocion")->name("adopcion.poner")->middleware("auth");
 Route::post("adopcion/sacar/{id}","AdopcionController@quitarAdopcion")->name("adopcion.sacar")->middleware("auth");
 Route::get("adopcion/listar","AdopcionController@getEnAdopcion")->name("adopcion.listar")->middleware("auth");

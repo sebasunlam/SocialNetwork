@@ -44,7 +44,7 @@
             });
 
             function getLocalidades(departamentoId) {
-                return $.get("/localidad/" + departamentoId + "/departamento").done(function (data) {
+                return $.get("{{route("localidad.byDepartamento",["departamento_id"=>-1])}}".replace("-1",departamentoId)).done(function (data) {
                     var localidades = '<option>Seleccione una localidad...</option>';
                     for (i = 0; i < data.length; i++) {
                         localidades = localidades + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
@@ -56,7 +56,7 @@
 
             function getDepartamentos(provinciaId) {
 
-                return $.get("/departamento/" + provinciaId + "/provincia").done(function (data) {
+                return $.get("{{route("departamento.byProvincia",["provincia_id"=>-1])}}".replace("-1",provinciaId)).done(function (data) {
                     var deptos = '<option>Seleccione un departamento...</option>';
                     ;
                     for (i = 0; i < data.length; i++) {
@@ -87,7 +87,7 @@
                 var latLng;
                 return $.get("https://maps.googleapis.com/maps/api/geocode/json", {
                     address: address,
-                    key: "AIzaSyDzfaxwXl0xql_XMHVs7e2m62Evn8avK3U"
+                    key: "AIzaSyCwh1Iw_UoMk5RGKEDc-6YVLsK6XCOUvxw"
                 }).done(function (data) {
                     if (data.status == 'OK') {
                         latLng = new google.maps.LatLng(data.results[0].geometry.location.lat, data.results[0].geometry.location.lng);
