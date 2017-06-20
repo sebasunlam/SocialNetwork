@@ -155,6 +155,39 @@
                 $("#videoUrl").val("https:///www.youtube.com/embed/" + videoId);
             });
 
+            @if($mascota->adopcion)
+            $("#btnToogleAdopcion").click(function () {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('adopcion.sacar',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                   location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            });
+            @else
+            $("#btnToogleAdopcion").click(function () {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('adopcion.poner',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                   location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            });
+            @endif
+
+
             @if($mascota->perdido)
              $("#btntoogleperdido").click(function () {
                 modal.showPleaseWait();
@@ -239,8 +272,16 @@
                             de seguir
                         </button>
                     @endif
-
+                        <a href="{{route("mascota.pdf",["id"=>$mascota->id])}}" class="btn btn-info">PDF <i
+                                    class="fa fa-download"></i> </a>
                 @else
+                    <button class="btn btn-default" type="button" id="btnToogleAdopcion">
+                        @if($mascota->adopcion)
+                            Quitar de adopción <i class="fa fa-gift" aria-hidden="true"></i>
+                        @else
+                            Poner en adopción <i class="fa fa-gift" aria-hidden="true"></i>
+                        @endif
+                    </button>
 
                     <button class="btn btn-warning" type="button" id="btnTooglePerdido">
                         @if($mascota->perdido)
@@ -257,8 +298,7 @@
                             Buscar pareja <i class="fa fa-heart" aria-hidden="true"></i>
                         @endif
                     </button>
-                    <a href="{{route("mascota.pdf",["id"=>$mascota->id])}}" class="btn btn-info">PDF <i
-                                class="fa fa-download"></i> </a>
+
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
                         <i
@@ -279,6 +319,7 @@
                          src="{{$mascota->imagen}}"
                          class="twPc-avatarImg">
                 @endif
+                    <img  class="twPc-avatarImg" src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('Nombre:'.$mascota->nombre.', tipo:'.$mascota->tipo.', raza:'.$mascota->raza. ', url:'.route("mascota.show",["id"=>$mascota->id]))) }} ">
 
             </a>
 
@@ -303,12 +344,6 @@
                             <span class="twPc-StatLabel twPc-block">Seguidores</span>
                             <span class="twPc-StatValue">{{$followers}}</span>
                         </a>
-                    </li>
-                    <li>
-                        <div class="visible-print text-center">
-                            {{--<img src="data:image/png;base64,{{base64_encode(QrCode::format('png'))->generate(route("mascota.show",["id"=>$mascota->id]))}}"/>--}}
-
-                        </div>
                     </li>
                 </ul>
             </div>

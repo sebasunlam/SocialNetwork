@@ -154,6 +154,7 @@ class BaseController extends Controller
         $mascotaViewModel->esta_perdido = $mascota->perdido ? "SI" : "NO";
         $mascotaViewModel->perdido = $mascota->perdido;
         $mascotaViewModel->buscandoPareja = $mascota->cita;
+        $mascotaViewModel->adopcion = $mascota->adopcion;
 
         $imagen = $mascota->imagen()->latest()->first();
 

@@ -252,12 +252,8 @@ class MascotaController extends BaseController
 
     function getPdf($id)
     {
-        $mascota = null;
-        if (Auth::check()) {
-            $userId = Auth::user()->id;
-            $currentuser = User::find($userId);
-            $mascota = $currentuser->perfil->mascota()->find($id);
-        }
+        $mascota = Mascota::find($id);
+
 
 
         $followers = $mascota->seguido();

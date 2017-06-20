@@ -90,7 +90,16 @@
                                         class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{route("perdido.all")}}">Ver mascotas perdidas</a></li>
-                                <li><a href="{{route("perdido.encontrados")}}">Novedades sobre mis mascotas perdidas</a>
+                                <li><a href="{{route("perdido.encontrados")}}">Mis mascotas perdidas</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                                aria-expanded="false" id="linkAdopcion">Adopciones <span
+                                        class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{route("adopcion.listar")}}">Ver mascotas en adopción</a></li>
+                                <li><a href="{{route("adopcion.solicitudes")}}">Mis mascotas en adopción</a>
                                 </li>
                             </ul>
                         </li>
@@ -220,7 +229,16 @@
             }
         });
 
+        $.get("{{route("adopcion.tiene")}}", function (data) {
+            if (data === "true") {
+                $("#linkAdopcion").html('Adopciones <i class="fa fa-bell" aria-hidden="true"></i> <span class="caret"></span>');
+            } else {
+                $("#linkAdopcion").html('Adopciones <span class="caret"></span>');
+            }
+        });
         @endif
+
+
     });
 </script>
 <script src="/js/common.js"></script>

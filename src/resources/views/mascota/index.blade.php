@@ -35,7 +35,7 @@
                 <th>En adopcion?</th>
                 <th>Buscando pareja?</th>
                 <th>Perdido?</th>
-                <th style="width:15%"></th>
+                <th style="width:20%"></th>
             </tr>
             </thead>
             @foreach($mascotas as $mascota)

@@ -14,16 +14,20 @@ class Transferencia extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'aceptada'
+        'aceptada',
+        'perfil_id',
+        'mascota_id'
     ];
 
     protected $guarded = [];
 
-        public function perfil(){
-            return $this->belongsTo('App\Models\Perfil');
-        }
+    public function perfil()
+    {
+        return $this->belongsTo('App\Models\Perfil');
+    }
 
-    public function mascota(){
+    public function mascota()
+    {
         return $this->belongsTo('App\Models\Mascota');
     }
 }

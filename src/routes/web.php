@@ -86,4 +86,13 @@ Route::get("perdido/encontrados","PerdidoController@getEncontrados")->name("perd
 Route::post("perdido/encontrado","PerdidoController@encontrado")->name("perdido.encontrado");
 Route::get("perdido/all","PerdidoController@getPerdidos")->name("perdido.all");
 
+/**/
+Route::post("adopcion/poner/{id}","AdopcionController@ponerAdpocion")->name("adopcion.poner")->middleware("auth");
+Route::post("adopcion/sacar/{id}","AdopcionController@quitarAdopcion")->name("adopcion.sacar")->middleware("auth");
+Route::get("adopcion/listar","AdopcionController@getEnAdopcion")->name("adopcion.listar")->middleware("auth");
+Route::post("adopcion/solicitar/{mascotaId}","AdopcionController@solicitarTransferencia")->name("adopcion.solicitar")->middleware("auth");
+Route::get("adopcion/solicitudes","AdopcionController@getSolicitudes")->name("adopcion.solicitudes")->middleware("auth");
+Route::get("adopcion/tiene","AdopcionController@tieneSoclicitudes")->name("adopcion.tiene")->middleware("auth");
+Route::post("adopcion/acepta/{transferenciaId}","AdopcionController@aceptaRechazaTransferencia")->name("adopcion.acepta")->middleware("auth");
+
 

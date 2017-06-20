@@ -13,10 +13,11 @@ use App\Models\Perfil;
 use App\Models\Sexo;
 use App\User;
 use DB;
+use stdClass;
 use Storage;
 use Auth;
 
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -76,14 +77,42 @@ class ProfileController extends Controller
      * @return \Illuminate\Http\Response
      * @internal param int $id
      */
-    public function show()
+    public function show($id)
     {
         //        return view("perfil.edit",compact('perfil'));
-        $id = Auth::user()->id;
-        $currentuser = User::find($id);
-        $perfil = $currentuser->perfil();
 
-        return view("perfil.show") - with("perfil", $perfil);
+        $perfil = Perfil::find($id);
+        $imagen = $perfil->imagen()->latest()->first();
+
+
+        $file = null;
+        $extension = null;
+
+        if (!empty($imagen) && Storage::disk('local')->exists($imagen->url)) {
+            $file = Storage::get($imagen->url);
+            $extension = $imagen->extension;
+        }
+
+
+
+        $profile = new stdClass();
+        $profile->image = !empty($extension) && !empty($file) ? 'data:image/' . $extension . ';base64,' . base64_encode($file) : null;
+        $profile->nombre = $perfil->nombre;
+        $profile->apellido = $perfil->apellido;
+        $profile->following = $perfil->sigue()->count();
+
+
+        $misMascotas = $perfil->mascota()->get();
+        $followers = 0;
+        $mascotasViewModel = array();
+        foreach ($misMascotas as $mascota){
+            $followers += $mascota->seguido()->count();
+            $mascotasViewModel[] = $this->MapToMascotaViewModel($mascota);
+        }
+        $profile->followers = $followers;
+
+
+        return view("perfil.show")->with("profile", $profile)->with("mascotas",$mascotasViewModel);
     }
 
     /**

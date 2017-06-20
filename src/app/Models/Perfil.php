@@ -65,5 +65,9 @@ class Perfil extends Model
     public function encotrado(){
         $this->hasMany('App\Models\Encontrado');
     }
+
+    public function transferencia(){
+        return$this->hasMany('App\Models\Transferencia');
+    }
         
 }

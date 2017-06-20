@@ -29,7 +29,8 @@ class Mascota extends Model
         'tamanio_id',
         'adopcion',
         'perdido',
-        'cita'
+        'cita',
+        'perfil_id'
 
     ];
 
@@ -78,6 +79,10 @@ class Mascota extends Model
 
     public function imagen(){
         return $this->belongsToMany('App\Models\Imagen');
+    }
+
+    public function transferencia(){
+        return$this->hasMany('App\Models\Transferencia');
     }
         
 }
