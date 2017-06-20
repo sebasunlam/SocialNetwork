@@ -6,6 +6,37 @@
 @section('scripts')
 
     <script type="text/javascript">
+        var map;
+        var lat;
+        var lng;
+        var marker;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -34.397, lng: 150.644},
+                zoom: 8,
+                disableDefaultUI: true,
+                draggable: true
+            });
+
+
+            google.maps.event.addListener(map, 'click', function (event) {
+                lat = event.latLng.lat();
+                lng = event.latLng.lng();
+                placeMarker(event.latLng);
+            });
+
+            function placeMarker(location) {
+                if (marker != undefined)
+                    marker.setMap(null);
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    animation: google.maps.Animation.DROP
+                });
+
+            }
+        }
         $(document).ready(function () {
             $("#imageData").hide();
             $("#videoData").hide();
@@ -123,8 +154,71 @@
                 var videoId = getId($("#videoUrl").val());
                 $("#videoUrl").val("https:///www.youtube.com/embed/" + videoId);
             });
+
+            @if($mascota->perdido)
+             $("#btntoogleperdido").click(function () {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('perdido.desmarcar',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            });
+            @else
+            $("#btnTooglePerdido").click(function () {
+                $("#mapModal").modal("show");
+            });
+
+            $("#mapModal").on("shown.bs.modal", function () {
+                google.maps.event.trigger(map, "resize");
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        map.setCenter(pos);
+                    });
+                }
+            });
+
+
+
+            $("#btnGuardarPerdido").click(function () {
+                modal.showPleaseWait();
+                $.ajax({
+                    url: "{{route('perdido.marcar',["id"=>$mascota->id])}}",
+                    type: "POST",
+                    data:{
+                        lat: lat,
+                        long:lng
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function () {
+                    location.reload();
+                }).always(function () {
+                    modal.hidePleaseWait();
+                })
+            });
+
+
+
+
+
+            @endif
         });
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwsdz2QoD3Bk4JhQNShw1GZ2cTsuY61vE&callback=initMap"
+            async defer></script>
 @endsection
 
 @section('content')
@@ -133,7 +227,6 @@
 
         <div>
             <div class="twPc-button">
-                <!-- Twitter Button | you can get from: https://about.twitter.com/tr/resources/buttons#follow -->
 
                 @if(!$propietario)
                     @if(!$siguiendo)
@@ -149,6 +242,13 @@
 
                 @else
 
+                    <button class="btn btn-warning" type="button" id="btnTooglePerdido">
+                        @if($mascota->perdido)
+                            Lo encontre!! <i class="fa fa-search-minus" aria-hidden="true"></i>
+                        @else
+                            Perdido <i class="fa fa-search-plus" aria-hidden="true"></i>
+                        @endif
+                    </button>
 
                     <button class="btn btn-danger" type="button" id="btnTooglePareja">
                         @if($mascota->buscandoPareja)
@@ -157,23 +257,14 @@
                             Buscar pareja <i class="fa fa-heart" aria-hidden="true"></i>
                         @endif
                     </button>
+                    <a href="{{route("mascota.pdf",["id"=>$mascota->id])}}" class="btn btn-info">PDF <i
+                                class="fa fa-download"></i> </a>
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#postModal">
                         <i
                                 class="fa fa-commenting-o" aria-hidden="true"></i> Postear
                     </button>
                 @endif
-                {{--<a href="https://twitter.com/mertskaplan" class="twitter-follow-button" data-show-count="false"--}}
-                {{--data-size="large" data-show-screen-name="false" data-dnt="true">Follow @mertskaplan</a>--}}
-                {{--<script>!function (d, s, id) {--}}
-                {{--var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';--}}
-                {{--if (!d.getElementById(id)) {--}}
-                {{--js = d.createElement(s);--}}
-                {{--js.id = id;--}}
-                {{--js.src = p + '://platform.twitter.com/widgets.js';--}}
-                {{--fjs.parentNode.insertBefore(js, fjs);--}}
-                {{--}--}}
-                {{--}(document, 'script', 'twitter-wjs');</script>--}}
 
             </div>
 
@@ -202,16 +293,22 @@
             <div class="twPc-divStats">
                 <ul class="twPc-Arrange">
                     <li class="twPc-ArrangeSizeFit">
-                        <a href="https://twitter.com/mertskaplan" title="9.840 Tweet">
+                        <a href="$" title="{{$posts}} posts">
                             <span class="twPc-StatLabel twPc-block">Posts</span>
                             <span class="twPc-StatValue">{{$posts}}</span>
                         </a>
                     </li>
                     <li class="twPc-ArrangeSizeFit">
-                        <a href="https://twitter.com/mertskaplan/followers" title="1.810 Followers">
+                        <a href="#" title="{{$followers}} seguidores">
                             <span class="twPc-StatLabel twPc-block">Seguidores</span>
                             <span class="twPc-StatValue">{{$followers}}</span>
                         </a>
+                    </li>
+                    <li>
+                        <div class="visible-print text-center">
+                            {{--<img src="data:image/png;base64,{{base64_encode(QrCode::format('png'))->generate(route("mascota.show",["id"=>$mascota->id]))}}"/>--}}
+
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -230,4 +327,24 @@
         @endforeach
     @endif
     @include('mascota.post')
+    <div class="modal fade" id="mapModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="mapModalHeader">Lugar</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="map" class="embed-responsive-16by9"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarPerdido">Guardar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 @endsection

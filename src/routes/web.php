@@ -58,6 +58,7 @@ Route::post('mascota/post/{id}','MascotaController@post')->name('mascota.post');
 Route::get('mascota/multipleSearch/{text}','MascotaController@multipleSearch')->name('mascota.multipleSearch');
 Route::get('mascota/all','MascotaController@all')->name('mascota.all');
 Route::get('mascota/{mascotaId}/tipo','MascotaController@getTipoId')->name('mascota.tipo');
+Route::get('mascota/pdf/{id}','MascotaController@getPdf')->name('mascota.pdf');
 
 
 /*Ranking*/
@@ -75,4 +76,14 @@ Route::get("citas/notificar","CitasController@notificacionCitas")->name("citas.n
 Route::get("citas/tiene","CitasController@hasCita")->name("citas.tiene")->middleware("auth");
 Route::get("citas/lista","CitasController@listadoCitas")->name("citas.lista")->middleware("auth");
 Route::post("citas/acepta","CitasController@aceptarCita")->name("citas.acepta")->middleware("auth");
+
+/*Perdido*/
+Route::post("perdido/marcar/{id}","PerdidoController@marcarPerdido")->name("perdido.marcar")->middleware("auth");
+Route::post("perdido/descmarcar/{id}","PerdidoController@desmarcarPerdido")->name("perdido.desmarcar")->middleware("auth");
+Route::post("perdido/acepta/{encontradoId}","PerdidoController@acepta")->name("perdido.acepta")->middleware("auth");
+Route::get("perdido/tiene","PerdidoController@hasEncontrados")->name("perdido.tiene")->middleware("auth");
+Route::get("perdido/encontrados","PerdidoController@getEncontrados")->name("perdido.encontrados")->middleware("auth");
+Route::post("perdido/encontrado","PerdidoController@encontrado")->name("perdido.encontrado");
+Route::get("perdido/all","PerdidoController@getPerdidos")->name("perdido.all");
+
 

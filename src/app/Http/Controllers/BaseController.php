@@ -152,6 +152,7 @@ class BaseController extends Controller
         $mascotaViewModel->en_adopcion = $mascota->adopcion ? "SI" : "NO";
         $mascotaViewModel->en_pareja = $mascota->cita ? "SI" : "NO";
         $mascotaViewModel->esta_perdido = $mascota->perdido ? "SI" : "NO";
+        $mascotaViewModel->perdido = $mascota->perdido;
         $mascotaViewModel->buscandoPareja = $mascota->cita;
 
         $imagen = $mascota->imagen()->latest()->first();
@@ -173,6 +174,7 @@ class BaseController extends Controller
         } else {
             $mascotaViewModel->nacimiento = $mascota->dia . "/" . $mascota->mes . "/" . $mascota->anio;
         }
+
 
         return $mascotaViewModel;
 

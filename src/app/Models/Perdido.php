@@ -17,7 +17,8 @@ class Perdido extends Model
 
     protected $fillable = [
         'lat',
-        'long'
+        'long',
+        'mascota_id'
     ];
 
     protected $guarded = [];

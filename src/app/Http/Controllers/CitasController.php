@@ -247,12 +247,9 @@ class CitasController extends BaseController
         $mascota = $this->getMascotaPerfil($perfil, $id);
         if (!is_null($mascota)) {
             $mascota->update(["cita" => $toogle]);
-
-//            return vie("citas.index")->with("mascota", $mascota);
         } else {
             $errors = [];
             $errors[] = "La mascota no es de su pertenencia";
-//            return vie("shared.index")->with("errors", $errors);
         }
     }
 

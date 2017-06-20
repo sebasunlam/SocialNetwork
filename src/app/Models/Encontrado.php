@@ -15,7 +15,9 @@ class Encontrado extends Model
 
     protected $fillable = [
         'contacto',
-        'aceptada'
+        'aceptada',
+        "perdido_id",
+        "imagen_id"
     ];
 
     protected $guarded = [];

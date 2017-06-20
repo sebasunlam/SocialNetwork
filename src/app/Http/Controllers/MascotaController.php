@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Models\Imagen;
 use App\Models\Mascota;
 use App\Models\Media;
@@ -13,6 +14,7 @@ use App\User;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use PDF;
 use stdClass;
 use Storage;
 
@@ -32,7 +34,7 @@ class MascotaController extends BaseController
 
     public function getTipoId($mascotaId)
     {
-        return $this->getMascotaPerfil($this->getCurrentProfile(),$mascotaId)->raza->tipo->id;
+        return $this->getMascotaPerfil($this->getCurrentProfile(), $mascotaId)->raza->tipo->id;
     }
 
     /**
@@ -73,29 +75,29 @@ class MascotaController extends BaseController
     {
         //
         $mascota = null;
-        if(Auth::check()){
+        if (Auth::check()) {
             $userId = Auth::user()->id;
             $currentuser = User::find($userId);
             $mascota = $currentuser->perfil->mascota()->find($id);
         }
 
         $propietario = true;
-        if(is_null($mascota)){
+        if (is_null($mascota)) {
             $mascota = Mascota::find($id);
             $propietario = false;
         }
 
         $followers = $mascota->seguido();
 
-        if(Auth::check()){
+        if (Auth::check()) {
             $userId = Auth::user()->id;
             $perfil = User::find($userId)->perfil;
             $siguiendo = !is_null($perfil->sigue()->find($mascota->id));
 
-            if(!$propietario){
+            if (!$propietario) {
                 Visita::create([
-                    "mascota_id" =>$mascota->id,
-                    "perfil_id"=>$perfil->id
+                    "mascota_id" => $mascota->id,
+                    "perfil_id" => $perfil->id
                 ]);
             }
         }
@@ -112,8 +114,8 @@ class MascotaController extends BaseController
             ->with('followers', $followers->count())
             ->with("feeds", $feeds)
             ->with('posts', $posts->count())
-            ->with('propietario',$propietario)
-            ->with('siguiendo',$siguiendo);
+            ->with('propietario', $propietario)
+            ->with('siguiendo', $siguiendo);
     }
 
     /**
@@ -208,13 +210,14 @@ class MascotaController extends BaseController
 
     }
 
-    public function multipleSearch($text){
-        $mascotas = Mascota::where('nombre','like','%'.$text.'%')->get();
+    public function multipleSearch($text)
+    {
+        $mascotas = Mascota::where('nombre', 'like', '%' . $text . '%')->get();
 
-        $resultado=[];
-        foreach ($mascotas as $mascota){
+        $resultado = [];
+        foreach ($mascotas as $mascota) {
             $item = new stdClass();
-            $item->name = $mascota->nombre." (".$mascota->raza()->descripcion." - ".$mascota->raza->tipo()->descripcion;
+            $item->name = $mascota->nombre . " (" . $mascota->raza()->descripcion . " - " . $mascota->raza->tipo()->descripcion;
             $item->id = $mascota->id;
             $resultado[] = $item;
         }
@@ -222,19 +225,20 @@ class MascotaController extends BaseController
         return $resultado;
     }
 
-    public function all(){
+    public function all()
+    {
         $mascotas = Mascota::All();
 
-        $resultado=[];
-        foreach ($mascotas as $mascota){
+        $resultado = [];
+        foreach ($mascotas as $mascota) {
             $item = new stdClass();
-            $item->name = $mascota->nombre." (Tipo: ".$mascota->raza->tipo->descripcion." - Raza: ".$mascota->raza->descripcion.")";
+            $item->name = $mascota->nombre . " (Tipo: " . $mascota->raza->tipo->descripcion . " - Raza: " . $mascota->raza->descripcion . ")";
 
-            if(Auth::check()){
+            if (Auth::check()) {
                 $userId = Auth::user()->id;
                 $currentuser = User::find($userId);
-                if($mascota->perfil->id == $currentuser->perfil->id){
-                    $item->name = $item->name." PROPIO";
+                if ($mascota->perfil->id == $currentuser->perfil->id) {
+                    $item->name = $item->name . " PROPIO";
                 }
             }
 
@@ -246,7 +250,33 @@ class MascotaController extends BaseController
     }
 
 
+    function getPdf($id)
+    {
+        $mascota = null;
+        if (Auth::check()) {
+            $userId = Auth::user()->id;
+            $currentuser = User::find($userId);
+            $mascota = $currentuser->perfil->mascota()->find($id);
+        }
 
+
+        $followers = $mascota->seguido();
+
+
+
+        $posts = $mascota->post()->orderBy("created_at", "desc")->get();
+
+
+        $html =view("mascota.pdfshow")
+            ->with('mascota', $this->MapToMascotaViewModel($mascota))
+            ->with('followers', $followers->count())
+            ->with('posts', $posts->count())->render();
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+        return $pdf->download($mascota->nombre.".pdf");
+
+    }
 
     private
     function createUpdate(Request $request, $id)

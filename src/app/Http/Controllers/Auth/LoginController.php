@@ -60,12 +60,6 @@ if($provider != 'twitter'){
     {
         $user = Socialite::driver($provider)->user();
 
-        if($user->getEmail() != ''){
-            $user = Socialite::driver('github')->userFromToken($user->token);
-        }
-
-
-
         $localUser = User::where('email','=',$user->getEmail())->first();
 
         if(is_null($localUser)){

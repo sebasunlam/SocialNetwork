@@ -178,7 +178,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Día</label>
                 <div class="col-sm-2">
-                    <input type="number" id="dia_nacimiento" name="dia_nacimiento" class="form-control"
+                    <input type="text" id="dia_nacimiento" name="dia_nacimiento" class="form-control"
                            value="{{!empty($mascota) ? $mascota->dia_nacimiento :'' }}">
                     @if ($errors->has('dia_nacimiento'))
                         <span class="help-block">
@@ -188,7 +188,7 @@
                 </div>
                 <label class="col-sm-2 control-label">Mes</label>
                 <div class="col-sm-2">
-                    <input type="number" id="mes_nacimiento" name="mes_nacimiento" class="form-control"
+                    <input type="text" id="mes_nacimiento" name="mes_nacimiento" class="form-control"
                            value="{{!empty($mascota) ? $mascota->mes_nacimiento :'' }}">
                     @if ($errors->has('mes_nacimiento'))
                         <span class="help-block">
@@ -198,7 +198,7 @@
                 </div>
                 <label class="col-sm-2 control-label">Año</label>
                 <div class="col-sm-2">
-                    <input type="number" id="anio_nacimiento" name="anio_nacimiento" class="form-control"
+                    <input type="text" id="anio_nacimiento" name="anio_nacimiento" class="form-control"
                            value="{{!empty($mascota) ? $mascota->anio_nacimiento :'' }}">
                     @if ($errors->has('anio_nacimiento'))
                         <span class="help-block">

@@ -73,6 +73,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
+                        <li><a href="{{route("perdido.all")}}">Ver mascotas perdidas</a></li>
                         <li><a href="{{ route('login') }}">Iniciar Sesión</a></li>
                         <li><a href="{{ route('register') }}">Registrarse</a></li>
                     @else
@@ -84,11 +85,20 @@
                                 <li><a href="{{route("citas.buscar")}}">Buscar citas</a></li>
                             </ul>
                         </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                                aria-expanded="false" id="linkPerdido">Perdidos <span
+                                        class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{route("perdido.all")}}">Ver mascotas perdidas</a></li>
+                                <li><a href="{{route("perdido.encontrados")}}">Novedades sobre mis mascotas perdidas</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-expanded="false">
                                 {{ empty(Auth::user()->perfil) ? Auth::user()->email :Auth::user()->perfil->nombre .' '. Auth::user()->perfil->apellido}}
-
+                                <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
@@ -157,24 +167,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="alertModal" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="alertModalHeader"></h4>
-            </div>
-            <div class="modal-body" id="alertModalContent">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn" data-dismiss="modal" id="btnAertModal"></button>
-            </div>
-        </div>
-
-    </div>
-</div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
 <script>
@@ -217,10 +210,19 @@
             } else {
                 $("#linkCitas").html('Citas <span class="caret"></span>');
             }
-        })
+        });
+
+        $.get("{{route("perdido.tiene")}}", function (data) {
+            if (data === "true") {
+                $("#linkPerdido").html('Perdidos <i class="fa fa-bell" aria-hidden="true"></i> <span class="caret"></span>');
+            } else {
+                $("#linkPerdido").html('Perdidos <span class="caret"></span>');
+            }
+        });
 
         @endif
-    });</script>
+    });
+</script>
 <script src="/js/common.js"></script>
 @yield('scripts')
 @yield('partial-scripts')

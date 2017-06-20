@@ -50,7 +50,7 @@ class RankingController extends Controller
 
             $mascotaRankeada->total = $mascotaRankeada->total + $mascota->seguido()->count();
             $mascotaRankeada->nombre = $mascota->nombre;
-            $mascotaRankeada->mascota_id = $mascota->mascota_id;
+            $mascotaRankeada->mascota_id = $mascota->id;
             $mascotaRankeada->like_text = $mascota->raza->tipo->like_text;
 
             if (!is_null($tipo)) {
