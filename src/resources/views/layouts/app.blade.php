@@ -19,13 +19,11 @@
     @yield('styles')
     @yield('partial-styles')
     <style>
-        .black-background {
-            background-color: #000000;
-        }
 
-        .white {
-            color: #ffffff;
+        .affix {
+            width: 22%;
         }
+        body { padding-top: 70px; }
     </style>
     <!-- Scripts -->
     <script>
@@ -36,7 +34,7 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-static-top navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
 
@@ -130,29 +128,23 @@
             </div>
         </div>
     </nav>
-    @if(Auth::check() && !empty($profile))
-        <div class="col-md-3">
-            <div class="col-md-offset-1 col-md-11">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        @include("layouts.sidebar")
-                    </div>
+    <div class="row">
+        @if(Auth::check() && !empty($profile))
+            <div class="col-md-3">
+                @include("layouts.sidebar")
+            </div>
+            <div class="col-md-7">
+                <div class="container-fluid">
+                    @yield('content')
                 </div>
             </div>
-        </div>
-        <div class="col-md-7">
-
-            <div class="container-fluid">
-                @yield('content')
+            <div class="col-md-2">
+                @include("layouts.infobar")
             </div>
-
-        </div>
-        <div class="col-md-2">
-            @include("layouts.infobar")
-        </div>
-    @else
-        @yield('content')
-    @endif
+        @else
+            @yield('content')
+        @endif
+    </div>
 
 
 </div>

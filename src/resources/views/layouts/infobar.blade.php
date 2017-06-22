@@ -27,7 +27,7 @@
         })
     </script>
 @endsection
-<div class="panel panel-warning">
+<div class="panel panel-warning" data-spy="affix" data-offset-top="70">
     <div class="panel-heading">
         Ranking
     </div>
