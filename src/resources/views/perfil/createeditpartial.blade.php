@@ -44,7 +44,7 @@
             });
 
             function getLocalidades(departamentoId) {
-                return $.get("{{route("localidad.byDepartamento",["departamento_id"=>-1])}}".replace("-1",departamentoId)).done(function (data) {
+                return $.get("{{route("localidad.byDepartamento",["departamento_id"=>-1])}}".replace("-1", departamentoId)).done(function (data) {
                     var localidades = '<option>Seleccione una localidad...</option>';
                     for (i = 0; i < data.length; i++) {
                         localidades = localidades + '<option value="' + data[i].id + '">' + data[i].descripcion + '</option>';
@@ -56,7 +56,7 @@
 
             function getDepartamentos(provinciaId) {
 
-                return $.get("{{route("departamento.byProvincia",["provincia_id"=>-1])}}".replace("-1",provinciaId)).done(function (data) {
+                return $.get("{{route("departamento.byProvincia",["provincia_id"=>-1])}}".replace("-1", provinciaId)).done(function (data) {
                     var deptos = '<option>Seleccione un departamento...</option>';
                     ;
                     for (i = 0; i < data.length; i++) {
@@ -172,8 +172,7 @@
             });
 
 
-
-            map.setCenter(new google.maps.LatLng('{{$domicilio->lat}}','{{$domicilio->long}}'));
+            map.setCenter(new google.maps.LatLng('{{$domicilio->lat}}', '{{$domicilio->long}}'));
 
 
             @else
@@ -193,7 +192,7 @@
         });
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwsdz2QoD3Bk4JhQNShw1GZ2cTsuY61vE&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwh1Iw_UoMk5RGKEDc-6YVLsK6XCOUvxw&callback=initMap"
             async defer></script>
 @endsection
 
@@ -230,7 +229,7 @@
     <div class="col-sm-12 col-md-5">
         <h3>Datos Personales</h3>
         <div class="row">
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('nombre') ? ' has-error' : '' }}">
                 <label for="nombre" class="col-sm-2 col-md-3 control-label">Nombre</label>
                 <div class="col-sm-10 col-md-9">
                     <input type="text" id="nombre" name="nombre" class="form-control"
@@ -242,7 +241,7 @@
                     @endif
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('apellido') ? ' has-error' : '' }}">
                 <label for="apellido" class="col-sm-2 col-md-3 control-label">Apellido</label>
                 <div class="col-sm-10 col-md-9">
                     <input type="text" id="apellido" name="apellido" class="form-control"
@@ -254,7 +253,7 @@
                     @endif
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('fechanacimiento') ? ' has-error' : '' }}">
                 <label for="fechanacimiento" class="col-sm-2 col-md-3 control-label">Fecha de Nacimiento</label>
                 <div class="col-sm-10 col-md-9">
                     <div class="input-group date">
@@ -271,7 +270,7 @@
                     @endif
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('telefono') ? ' has-error' : '' }}">
                 <label for="telefono" class="col-sm-2 col-md-3 control-label">Telefono</label>
                 <div class="col-sm-10 col-md-9">
                     <input type="tel" id="telefono" name="telefono" class="form-control"
@@ -283,7 +282,7 @@
                     @endif
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('sexo_id') ? ' has-error' : '' }}">
                 <label for="sexo_id" class="col-sm-2 col-md-3 control-label">Sexo</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="sexo_id" name="sexo_id" class="form-control">
@@ -321,16 +320,16 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('localidad_id') ? ' has-error' : '' }}">
                 <label for="localidad_id" class="col-sm-2 col-md-3 control-label">Localidad</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="localidad_id" name="localidad_id" class="form-control">
                     </select>
                 </div>
             </div>
-            <div class="row input-group">
+            <div class="row form-group {{ $errors->has('numero') || $errors->has('calle') ? ' has-error' : '' }}">
 
-                <label for="calle" class="col-sm-2 col-md-2 control-label">Calle</label>
+                <label for="calle" class="col-sm-2 col-md-2 control-label ">Calle</label>
                 <div class="col-sm-10 col-md-5">
                     <input type="text" id="calle" name="calle" class="form-control"
                            value="{{!empty($domicilio) ? $domicilio->calle :'' }}">
@@ -356,6 +355,15 @@
         </div>
     </div>
 </div>
+@if ($errors->has('lat'))
+    <div class="row">
+        <div class="alert alert-danger">
+            <ul>
+                <li>{{ $errors->first('lat') }}</li>
+            </ul>
+        </div>
+    </div>
+@endif
 <div class="row">
     <div class="col-sm-offset-3 col-sm-6">
         <div class="panel">

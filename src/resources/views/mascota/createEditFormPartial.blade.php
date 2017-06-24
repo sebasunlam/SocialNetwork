@@ -117,7 +117,7 @@
     </div>
     <div class="col-md-6">
         <div class="row">
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('nombre') ? ' has-error' : '' }}">
                 <label for="nombre" class="col-sm-2 col-md-3 control-label">Nombre</label>
                 <div class="col-sm-10 col-md-9">
                     <input type="text" id="nombre" name="nombre" class="form-control"
@@ -129,7 +129,7 @@
                     @endif
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('sexo_id') ? ' has-error' : '' }}">
                 <label for="sexo_id" class="col-sm-2 col-md-3 control-label">Sexo</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="sexo_id" name="sexo_id" class="form-control">
@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('tamanio_id') ? ' has-error' : '' }}">
                 <label for="tamanio_id" class="col-sm-2 col-md-3 control-label">Tamaño</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="tamanio_id" name="tamanio_id" class="form-control">
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group ">
                 <label for="tipoId" class="col-sm-2 col-md-3 control-label">Tipo</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="tipoId" name="tipoId" class="form-control">
@@ -164,7 +164,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('raza_id') ? ' has-error' : '' }}">
                 <label for="raza_id" class="col-sm-2 col-md-3 control-label">Raza</label>
                 <div class="col-sm-10 col-md-9">
                     <select id="raza_id" name="raza_id" class="form-control">
@@ -175,7 +175,7 @@
             <div class="form-group">
                 <label class="col-sm-8 control-label">Fecha de nacimiento</label>
             </div>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('dia_nacimiento') || $errors->has('mes_nacimiento') || $errors->has('anio_nacimiento')  ? ' has-error' : '' }}">
                 <label class="col-sm-2 control-label">Día</label>
                 <div class="col-sm-2">
                     <input type="text" id="dia_nacimiento" name="dia_nacimiento" class="form-control"

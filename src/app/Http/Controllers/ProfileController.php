@@ -66,6 +66,21 @@ class ProfileController extends BaseController
     public function store(Request $request)
     {
         //
+        $this->validate($request,[
+            'nombre'=>'required|max:255',
+            'apellido'=>'required|max:255',
+            'fechanacimiento'=>'required|date',
+            'telefono'=>'required|numeric',
+            'sexo_id'=>'required',
+            'localidad_id'=>'required',
+            'calle'=>'required|max:255',
+            'numero'=>'numeric',
+            'lat'=>'required',
+            'long'=>'required',
+        ],[
+            'lat.required'=>'Debe ubicar el marcador en el mapa',
+            'long.required'=>'Debe ubicar el marcador en el mapa'
+        ]);
         $this->createUpdate($request);
         return redirect(route('feed'));
     }
@@ -163,6 +178,21 @@ class ProfileController extends BaseController
     public function update(Request $request)
     {
         //
+        $this->validate($request,[
+            'nombre'=>'required|max:255',
+            'apellido'=>'required|max:255',
+            'fechanacimiento'=>'required|date',
+            'telefono'=>'required|numeric',
+            'sexo_id'=>'required',
+            'localidad_id'=>'required',
+            'calle'=>'required|max:255',
+            'numero'=>'numeric',
+            'lat'=>'required',
+            'long'=>'required',
+        ],[
+            'lat.required'=>'Debe ubicar el marcador en el mapa',
+            'long.required'=>'Debe ubicar el marcador en el mapa'
+        ]);
         $this->createUpdate($request);
 
         return redirect(route('feed'));

@@ -60,6 +60,24 @@ class MascotaController extends BaseController
     public function store(Request $request)
     {
         //
+
+        $rules = [
+            'nombre' => 'required|max:255',
+            'sexo_id' => 'required',
+            'tamanio_id' => 'required',
+            'raza_id' => 'required',
+
+            'anio_nacimiento' => 'numeric|required'
+        ];
+        if (!empty($request["dia_nacimiento"])) {
+            $rules["dia_nacimiento"] = 'numeric';
+
+        }
+        if (!empty($request["mes_nacimiento"])) {
+            $rules['mes_nacimiento'] = 'numeric';
+        }
+        $this->validate($request,$rules);
+
         $this->createUpdate($request, -1);
 
         return redirect(route('feed'));
@@ -150,6 +168,23 @@ class MascotaController extends BaseController
     public function update(Request $request, $id)
     {
         //
+        $rules = [
+            'nombre' => 'required|max:255',
+            'sexo_id' => 'required',
+            'tamanio_id' => 'required',
+            'raza_id' => 'required',
+
+            'anio_nacimiento' => 'numeric|required'
+        ];
+        if (!empty($request["dia_nacimiento"])) {
+            $rules["dia_nacimiento"] = 'numeric';
+
+        }
+        if (!empty($request["mes_nacimiento"])) {
+            $rules['mes_nacimiento'] = 'numeric';
+        }
+
+        $this->validate($request,$rules);
 
         $this->createUpdate($request, $id);
 
@@ -255,22 +290,20 @@ class MascotaController extends BaseController
         $mascota = Mascota::find($id);
 
 
-
         $followers = $mascota->seguido();
-
 
 
         $posts = $mascota->post()->orderBy("created_at", "desc")->get();
 
 
-        $html =view("mascota.pdfshow")
+        $html = view("mascota.pdfshow")
             ->with('mascota', $this->MapToMascotaViewModel($mascota))
             ->with('followers', $followers->count())
             ->with('posts', $posts->count())->render();
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadHTML($html);
-        return $pdf->download($mascota->nombre.".pdf");
+        return $pdf->download($mascota->nombre . ".pdf");
 
     }
 

@@ -38,8 +38,10 @@
                             <div id="imageData" align="center">
                                 <div class="row">
                                     <div class="col-sm-12" align="center">
-                                        <img id="postImg" src="" alt="Suba una imagen"
-                                             class="img-responsive img-thumbnail postImg">
+                                        <div>
+                                            <img id="postImg" src="" alt="Suba una imagen"
+                                                 class="img-responsive img-thumbnail postImg">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">

@@ -250,7 +250,7 @@
             @endif
         });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwsdz2QoD3Bk4JhQNShw1GZ2cTsuY61vE&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwh1Iw_UoMk5RGKEDc-6YVLsK6XCOUvxw&callback=initMap"
             async defer></script>
 @endsection
 

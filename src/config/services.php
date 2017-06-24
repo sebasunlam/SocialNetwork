@@ -37,16 +37,16 @@ return [
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENTID'),
         'client_secret' => env('FACEBOOK_SECRET'),
-        'redirect' => env('FACEBOOK_REDIRECT'),
+        'redirect' => env('FACEBOOK_REDIRECT')
     ],
     'google' => [
         'client_id' => env('GOOGLE_CLIENTID'),
         'client_secret' => env('GOOGLE_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT'),
+        'redirect' => env('GOOGLE_REDIRECT')
     ],
     'twitter' => [
         'client_id' => env('TWITTER_CLIENTID'),
         'client_secret' => env('TWITTER_SECRET'),
-        'redirect' => env('TWITTER_REDIRECT'),
+        'redirect' => env('TWITTER_REDIRECT')
     ]
 ];
