@@ -180,4 +180,8 @@ class BaseController extends Controller
         return $mascotaViewModel;
 
     }
+
+    public function notFound(){
+        return view("shared.notfound");
+    }
 }

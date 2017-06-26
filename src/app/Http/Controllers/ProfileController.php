@@ -97,6 +97,10 @@ class ProfileController extends BaseController
         //        return view("perfil.edit",compact('perfil'));
 
         $perfil = Perfil::find($id);
+
+        if(is_null($perfil)){
+            return $this->notFound();
+        }
         $imagen = $perfil->imagen()->latest()->first();
 
 

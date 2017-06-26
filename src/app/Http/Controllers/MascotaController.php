@@ -105,6 +105,10 @@ class MascotaController extends BaseController
             $propietario = false;
         }
 
+        if(is_null($mascota)){
+            return $this->notFound();
+        }
+
         $followers = $mascota->seguido();
 
         if (Auth::check()) {
@@ -148,7 +152,9 @@ class MascotaController extends BaseController
         $userId = Auth::user()->id;
         $currentuser = User::find($userId);
         $mascota = $currentuser->perfil->mascota()->find($id);
-
+        if(is_null($mascota)){
+            return $this->notFound();
+        }
 
         return view("mascota.edit")
             ->with('mascota', $this->MapToMascotaViewModel($mascota))

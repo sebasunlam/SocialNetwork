@@ -165,7 +165,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 }).done(function () {
-                   location.reload();
+                    location.reload();
                 }).always(function () {
                     modal.hidePleaseWait();
                 })
@@ -180,7 +180,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 }).done(function () {
-                   location.reload();
+                    location.reload();
                 }).always(function () {
                     modal.hidePleaseWait();
                 })
@@ -223,15 +223,14 @@
             });
 
 
-
             $("#btnGuardarPerdido").click(function () {
                 modal.showPleaseWait();
                 $.ajax({
                     url: "{{route('perdido.marcar',["id"=>$mascota->id])}}",
                     type: "POST",
-                    data:{
+                    data: {
                         lat: lat,
-                        long:lng
+                        long: lng
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -260,7 +259,8 @@
 
         <div>
             <div class="twPc-button">
-
+                <a href="{{route("mascota.pdf",["id"=>$mascota->id])}}" class="btn btn-info">PDF <i
+                            class="fa fa-download"></i> </a>
                 @if(!$propietario)
                     @if(!$siguiendo)
                         <button type="button" class="btn btn-success" id="btnFollow"><i class="fa fa-forward"
@@ -272,8 +272,7 @@
                             de seguir
                         </button>
                     @endif
-                        <a href="{{route("mascota.pdf",["id"=>$mascota->id])}}" class="btn btn-info">PDF <i
-                                    class="fa fa-download"></i> </a>
+
                 @else
                     <button class="btn btn-default" type="button" id="btnToogleAdopcion">
                         @if($mascota->adopcion)
@@ -319,7 +318,8 @@
                          src="{{$mascota->imagen}}"
                          class="twPc-avatarImg">
                 @endif
-                    <img  class="twPc-avatarImg" src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('Nombre:'.$mascota->nombre.', tipo:'.$mascota->tipo.', raza:'.$mascota->raza. ', url:'.route("mascota.show",["id"=>$mascota->id]))) }} ">
+                <img class="twPc-avatarImg"
+                     src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate('Nombre:'.$mascota->nombre.', tipo:'.$mascota->tipo.', raza:'.$mascota->raza. ', url:'.route("mascota.show",["id"=>$mascota->id]))) }} ">
 
             </a>
 
@@ -351,11 +351,29 @@
     </div>
     <hr>
     @if(empty($feeds))
-        <div class="row">
-            <div class="col-md-offset-1 col-md-10">
-                <h3 class="text-info">Realiza algun post para ver algo aquí...</h3>
+        @if(!$propietario)
+            @if(!$siguiendo)
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-10">
+                        <h3 class="text-info"> Para ver lo que dice {{$mascota->nombre}} debes seguirla</h3>
+                    </div>
+                </div>
+            @else
+
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-10">
+                        <h3 class="text-info">{{$mascota->nombre}} no a realizado ningun post</h3>
+                    </div>
+                </div>
+            @endif
+        @else
+            <div class="row">
+                <div class="col-md-offset-1 col-md-10">
+                    <h3 class="text-info">Realiza algun post para ver algo aquí...</h3>
+                </div>
             </div>
-        </div>
+
+        @endif
     @else
         @foreach($feeds as $feed)
             @include('shared.feed')
