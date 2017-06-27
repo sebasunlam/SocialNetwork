@@ -1,4 +1,4 @@
-<div class="panel panel-default" data-spy="affix" data-offset-top="70">
+<div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
             <div class="col-md-offset-1 col-md-10">
